@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "336007296953",
+    "project_id": "kos-management-12f4b",
+    "storage_bucket": "kos-management-12f4b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336007296953:android:563b5fc577d384cbcda868",
+        "android_client_info": {
+          "package_name": "com.example.kos_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8ipMD-cnHrpYtGkDbqWNNwjYqvUbNILs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336007296953:android:2b923d221d0b639ecda868",
+        "android_client_info": {
+          "package_name": "com.example.notif"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8ipMD-cnHrpYtGkDbqWNNwjYqvUbNILs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
