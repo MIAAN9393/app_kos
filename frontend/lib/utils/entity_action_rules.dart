@@ -134,4 +134,64 @@ class EntityActionRules {
 
   static String? pesanHapusTagihan(Map<String, dynamic> tagihan) =>
       pesanUbahTagihan(tagihan);
+
+  // --- Pembayaran (pembayaran_service.js buat_refund_pembayaran) ---
+  // refund: pembayaran status valid, bukan row refund, belum direfund penuh,
+  // dan tagihan terkait belum lunas.
+
+  static int totalRefundPembayaran(
+    Map<String, dynamic> pembayaran,
+    List<Map<String, dynamic>> semuaPembayaranTagihan,
+  ) {
+    final id = _angka(pembayaran['id']);
+    if (id == 0) return 0;
+    return semuaPembayaranTagihan
+        .where(
+          (row) =>
+              '${row['status'] ?? ''}' == 'refund' &&
+              _angka(row['pembayaran_ref_id']) == id,
+        )
+        .fold<int>(0, (total, row) => total + _angka(row['jumlah_bayar']));
+  }
+
+  static int sisaRefundPembayaran(
+    Map<String, dynamic> pembayaran,
+    List<Map<String, dynamic>> semuaPembayaranTagihan,
+  ) {
+    final jumlah = _angka(pembayaran['jumlah_bayar']);
+    final refund = totalRefundPembayaran(pembayaran, semuaPembayaranTagihan);
+    final sisa = jumlah - refund;
+    return sisa < 0 ? 0 : sisa;
+  }
+
+  static bool bolehRefundPembayaran(
+    Map<String, dynamic> pembayaran, {
+    Map<String, dynamic>? tagihan,
+    List<Map<String, dynamic>> semuaPembayaranTagihan = const [],
+  }) {
+    if ('${pembayaran['status'] ?? 'valid'}' != 'valid') return false;
+    if (_angka(pembayaran['pembayaran_ref_id']) > 0) return false;
+    if ('${tagihan?['status_pembayaran'] ?? ''}' == 'lunas') return false;
+    return sisaRefundPembayaran(pembayaran, semuaPembayaranTagihan) > 0;
+  }
+
+  static String? pesanRefundPembayaran(
+    Map<String, dynamic> pembayaran, {
+    Map<String, dynamic>? tagihan,
+    List<Map<String, dynamic>> semuaPembayaranTagihan = const [],
+  }) {
+    if ('${pembayaran['status'] ?? 'valid'}' != 'valid') {
+      return 'Refund hanya bisa dari pembayaran valid';
+    }
+    if (_angka(pembayaran['pembayaran_ref_id']) > 0) {
+      return 'Data ini adalah refund, bukan pembayaran asli';
+    }
+    if ('${tagihan?['status_pembayaran'] ?? ''}' == 'lunas') {
+      return 'Tagihan sudah lunas, refund tidak diizinkan';
+    }
+    if (sisaRefundPembayaran(pembayaran, semuaPembayaranTagihan) <= 0) {
+      return 'Pembayaran ini sudah direfund penuh';
+    }
+    return null;
+  }
 }

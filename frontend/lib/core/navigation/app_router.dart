@@ -20,6 +20,7 @@ import 'package:kos_management/features/kos/kos_detail_page.dart';
 import 'package:kos_management/features/kos/kos_statistik_page.dart';
 import 'package:kos_management/features/kos/tambah_kos_page.dart';
 import 'package:kos_management/features/parent/parent_page.dart';
+import 'package:kos_management/features/pembayaran/pembayaran_detail_page.dart';
 import 'package:kos_management/features/penyewa/edit_penyewa_page.dart';
 import 'package:kos_management/features/penyewa/penyewa_page.dart';
 import 'package:kos_management/features/penyewa/profile_penyewa_page.dart';
@@ -218,6 +219,25 @@ class AppRouter {
               idKamar: requireIntArg(m, 'id_kamar'),
               idKos: requireIntArg(m, 'id_kos'),
               kontrakId: intArg(m, 'kontrakId'),
+            ),
+            settings,
+          );
+        case AppRoutes.pembayaranDetail:
+          final m = _map(args);
+          final rawPembayaran = m['pembayaran'];
+          final rawTagihan = m['tagihan'];
+          if (rawPembayaran is! Map) {
+            throw const FormatException('Data pembayaran tidak valid');
+          }
+          return _slide(
+            PembayaranDetailPage(
+              pembayaran: Map<String, dynamic>.from(rawPembayaran),
+              initialTagihan: rawTagihan is Map
+                  ? Map<String, dynamic>.from(rawTagihan)
+                  : null,
+              penyewaId: intArg(m, 'penyewaId'),
+              idKamar: intArg(m, 'idKamar'),
+              idKos: intArg(m, 'idKos'),
             ),
             settings,
           );

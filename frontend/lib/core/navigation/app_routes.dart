@@ -29,6 +29,7 @@ class AppRoutes {
   static const detailTagihan = '/tagihan/detail';
   static const tagihanTambah = '/tagihan/tambah';
   static const tagihanEdit = '/tagihan/edit';
+  static const pembayaranDetail = '/pembayaran/detail';
 
   // CONTROLL — operasional
   static const checkInCepat = '/check-in/cepat';

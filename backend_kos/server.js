@@ -31,6 +31,7 @@ app.use('/api/profile',require("./routes/profile_routes"))
 app.use('/api/whatsapp',require("./routes/whatsapp_routes"))
 app.use('/api/pengaturan-otomatis',require("./routes/pengaturan_otomatis_routes"))
 app.use('/api/fcm',require("./routes/fcm_routes"))
+app.use('/api/midtrans',require("./routes/midtrans_routes"))
 
 app.use(require("./middleware/error_middleware"))
 // Test koneksi DB

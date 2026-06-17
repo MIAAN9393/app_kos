@@ -15,6 +15,7 @@ const PengaturanTagihanOtomatis = require("./pengaturan_tagihan_otomatis")
 const PengaturanPerpanjanganKontrakOtomatis = require("./pengaturan_perpanjangan_kontrak_otomatis")
 const FcmToken = require("./fcm_token")
 const FcmNotificationSetting = require("./fcm_notification_setting")
+const SubscriptionPayment = require("./subscription_payment")
 
 User.hasMany(Kos,{
     foreignKey:"pemilik_id"
@@ -111,6 +112,13 @@ User.hasOne(FcmNotificationSetting,{
     foreignKey:"user_id"
 })
 FcmNotificationSetting.belongsTo(User,{
+    foreignKey:"user_id"
+})
+
+User.hasMany(SubscriptionPayment,{
+    foreignKey:"user_id"
+})
+SubscriptionPayment.belongsTo(User,{
     foreignKey:"user_id"
 })
 

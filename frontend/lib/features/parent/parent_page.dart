@@ -4,6 +4,8 @@ import 'package:kos_management/core/theme/app_design.dart';
 import 'package:kos_management/features/controll/controll_page.dart';
 import 'package:kos_management/features/kos/kos_page.dart';
 import 'package:kos_management/features/dashboard/dashboard_page.dart';
+import 'package:kos_management/features/introduction/introduction_sheet.dart';
+import 'package:kos_management/features/introduction/introduction_store.dart';
 import 'package:kos_management/features/keuangan/keuangan_page.dart';
 import 'package:kos_management/providers/laporan_keuangan_provider.dart';
 import 'package:provider/provider.dart';
@@ -34,8 +36,22 @@ class MainNavigationState extends State<MainNavigation> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _tampilkanIntroductionJikaPerlu();
+    });
+  }
+
+  Future<void> _tampilkanIntroductionJikaPerlu() async {
+    final sudahDilihat = await IntroductionStore.sudahDilihat();
+    if (!mounted || sudahDilihat) return;
+    await IntroductionSheet.show(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    
     return ShellScope(
       pindahTab: pindahTab,
       child: Scaffold(

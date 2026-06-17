@@ -521,39 +521,50 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
                       if (id == 0) return const SizedBox.shrink();
                       final status = '${p['status']}';
                       final isValid = status == 'valid';
-                      return Container(
-                        margin: const EdgeInsets.only(
-                          bottom: AppDesign.spaceSm,
+                      return InkWell(
+                        onTap: () => AppNavigation.toPembayaranDetail(
+                          context,
+                          pembayaran: Map<String, dynamic>.from(p),
+                          tagihan: tagihan,
+                          penyewaId: widget.penyewaId,
+                          idKamar: widget.idKamar,
+                          idKos: widget.idKos,
                         ),
-                        padding: const EdgeInsets.all(AppDesign.spaceMd),
-                        decoration: AppDesign.cardDecoration(),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppDesign.formatRupiah(p['jumlah_bayar']),
-                                    style: AppDesign.titleBold(context),
-                                  ),
-                                  Text(
-                                    '${p['dibuat_pada'] ?? ''}',
-                                    style: AppDesign.bodyMuted(context),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            AppStatusBadge(status: status),
-                            if (isValid)
-                              TextButton(
-                                onPressed: () => _dialogRefund(
-                                  id,
-                                  (p['jumlah_bayar'] as num?)?.toInt() ?? 0,
+                        borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                            bottom: AppDesign.spaceSm,
+                          ),
+                          padding: const EdgeInsets.all(AppDesign.spaceMd),
+                          decoration: AppDesign.cardDecoration(),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppDesign.formatRupiah(p['jumlah_bayar']),
+                                      style: AppDesign.titleBold(context),
+                                    ),
+                                    Text(
+                                      '${p['dibuat_pada'] ?? ''}',
+                                      style: AppDesign.bodyMuted(context),
+                                    ),
+                                  ],
                                 ),
-                                child: const Text('Refund'),
                               ),
-                          ],
+                              AppStatusBadge(status: status),
+                              if (isValid)
+                                TextButton(
+                                  onPressed: () => _dialogRefund(
+                                    id,
+                                    (p['jumlah_bayar'] as num?)?.toInt() ?? 0,
+                                  ),
+                                  child: const Text('Refund'),
+                                ),
+                            ],
+                          ),
                         ),
                       );
                     }),

@@ -22,8 +22,9 @@ class ControllPembayaranTab extends StatefulWidget {
 class _ControllPembayaranTabState extends State<ControllPembayaranTab>
     with AutomaticKeepAliveClientMixin {
   final _search = TextEditingController();
-  final Set<int> _selectedFilters =
-      ControllHelpers.defaultFilterSelection(_filterLabels.length);
+  final Set<int> _selectedFilters = ControllHelpers.defaultFilterSelection(
+    _filterLabels.length,
+  );
   static const _filterLabels = ['Valid', 'Refund'];
   bool _loaded = false;
 
@@ -49,24 +50,25 @@ class _ControllPembayaranTabState extends State<ControllPembayaranTab>
   }
 
   void _bukaDetail(Map<String, dynamic> row) {
-    final tagihanId = entityId(row['tagihan_id']);
     final penyewaId = entityId(row['penyewa_id']);
-    if (tagihanId == null || penyewaId == null) return;
     // kamar_id diambil dari tagihan terkait dulu, fallback index penyewa aktif.
     final tagihan = row['_tagihan'];
-    final kamarId = (tagihan is Map ? entityId(tagihan['kamar_id']) : null) ??
-        ControllHelpers.kamarIdForPenyewa(
-          context.read<PenyewaProvider>(),
-          penyewaId,
-        );
+    final kamarId =
+        (tagihan is Map ? entityId(tagihan['kamar_id']) : null) ??
+        (penyewaId == null
+            ? null
+            : ControllHelpers.kamarIdForPenyewa(
+                context.read<PenyewaProvider>(),
+                penyewaId,
+              ));
     final kosId = ControllHelpers.kosIdForKamar(
       context.read<KamarProvider>(),
       kamarId,
     );
-    if (kamarId == null || kosId == null) return;
-    AppNavigation.toTagihanDetail(
+    AppNavigation.toPembayaranDetail(
       context,
-      tagihanId: tagihanId,
+      pembayaran: row,
+      tagihan: tagihan is Map ? Map<String, dynamic>.from(tagihan) : null,
       penyewaId: penyewaId,
       idKamar: kamarId,
       idKos: kosId,
@@ -88,7 +90,8 @@ class _ControllPembayaranTabState extends State<ControllPembayaranTab>
       _selectedFilters,
     );
     final data = outcome.data;
-    final hasFilter = _search.text.trim().isNotEmpty ||
+    final hasFilter =
+        _search.text.trim().isNotEmpty ||
         ListMultiFilter.isNarrowedSelection(
           _selectedFilters,
           _filterLabels.length,
@@ -126,40 +129,40 @@ class _ControllPembayaranTabState extends State<ControllPembayaranTab>
           child: !_loaded || payProv.loading
               ? const Center(child: CircularProgressIndicator())
               : data.isEmpty
-                  ? AppListTabUi.emptyListMessage(
-                      context: context,
-                      hasQuery: _search.text.trim().isNotEmpty,
-                      hasFilter: hasFilter,
-                      emptyMessage: 'Belum ada pembayaran tercatat.',
-                      noMatchMessage: 'Tidak ada pembayaran yang cocok.',
-                    )
-                  : ListView.builder(
-                      padding: AppListTabUi.listPadding(embedded: true),
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        final row = data[index];
-                        final tagihan = row['_tagihan'] is Map
-                            ? Map<String, dynamic>.from(
-                                row['_tagihan'] as Map,
-                              )
-                            : tagihanProv.tagihan_by_id[
-                                entityId(row['tagihan_id']) ?? -1];
-                        final penyewaId = entityId(row['penyewa_id']);
-                        return AppPembayaranListCard(
-                          pembayaran: row,
-                          tagihan: tagihan,
-                          konteksPenyewa: penyewaId != null
-                              ? ControllHelpers.labelKonteksPenyewa(
-                                  penyewa: penyewaProv,
-                                  kamar: kamarProv,
-                                  kos: kosProv,
-                                  penyewaId: penyewaId,
-                                )
-                              : null,
-                          onTap: () => _bukaDetail(row),
-                        );
-                      },
-                    ),
+              ? AppListTabUi.emptyListMessage(
+                  context: context,
+                  hasQuery: _search.text.trim().isNotEmpty,
+                  hasFilter: hasFilter,
+                  emptyMessage: 'Belum ada pembayaran tercatat.',
+                  noMatchMessage: 'Tidak ada pembayaran yang cocok.',
+                )
+              : ListView.builder(
+                  padding: AppListTabUi.listPadding(embedded: true),
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final row = data[index];
+                    final tagihan = row['_tagihan'] is Map
+                        ? Map<String, dynamic>.from(row['_tagihan'] as Map)
+                        : tagihanProv.tagihan_by_id[entityId(
+                                row['tagihan_id'],
+                              ) ??
+                              -1];
+                    final penyewaId = entityId(row['penyewa_id']);
+                    return AppPembayaranListCard(
+                      pembayaran: row,
+                      tagihan: tagihan,
+                      konteksPenyewa: penyewaId != null
+                          ? ControllHelpers.labelKonteksPenyewa(
+                              penyewa: penyewaProv,
+                              kamar: kamarProv,
+                              kos: kosProv,
+                              penyewaId: penyewaId,
+                            )
+                          : null,
+                      onTap: () => _bukaDetail(row),
+                    );
+                  },
+                ),
         ),
       ],
     );

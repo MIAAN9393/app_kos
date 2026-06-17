@@ -277,6 +277,27 @@ class AppNavigation {
     );
   }
 
+  static void toPembayaranDetail(
+    BuildContext context, {
+    required Map<String, dynamic> pembayaran,
+    Map<String, dynamic>? tagihan,
+    int? penyewaId,
+    int? idKamar,
+    int? idKos,
+  }) {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.pembayaranDetail,
+      arguments: {
+        'pembayaran': pembayaran,
+        'tagihan': tagihan,
+        'penyewaId': penyewaId,
+        'idKamar': idKamar,
+        'idKos': idKos,
+      },
+    );
+  }
+
   static void toCheckInCepat(BuildContext context) {
     Navigator.pushNamed(context, AppRoutes.checkInCepat);
   }
