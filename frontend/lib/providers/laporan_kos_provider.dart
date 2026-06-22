@@ -10,21 +10,21 @@ class LaporanKosProvider extends ChangeNotifier {
   Map<int, List<Map<String, dynamic>>> data_laporan_kos = {};
 
   bool loading = false;
-  Map<int, bool> _perlu_muat_ulang = {};
+  final Map<int, bool> _perlu_muat_ulang = {};
 
   LaporanKosProvider() {
     _instance = this;
   }
 
   /// Tandai cache laporan kos perlu di-fetch ulang (mis. setelah bayar/refund/tagihan).
-  void tandai_perlu_muat_ulang(int kos_id) {
-    _perlu_muat_ulang[kos_id] = true;
+  void tandai_perlu_muat_ulang(int kosId) {
+    _perlu_muat_ulang[kosId] = true;
     notifyListeners();
   }
 
   /// Dipanggil dari provider lain tanpa [BuildContext].
-  static void tandaiMuatUlang(int kos_id) {
-    _instance?.tandai_perlu_muat_ulang(kos_id);
+  static void tandaiMuatUlang(int kosId) {
+    _instance?.tandai_perlu_muat_ulang(kosId);
   }
 
   void tandai_semua_perlu_muat_ulang() {
@@ -54,32 +54,32 @@ class LaporanKosProvider extends ChangeNotifier {
     return msg.isEmpty ? null : msg;
   }
 
-  Future<void> ambil_or_fecth(int kos_id) async {
-    final data = data_laporan_kos[kos_id];
-    if (data == null || data.isEmpty || _perlu_muat_ulang[kos_id] == true) {
-      await ambil_data_kos_provider(kos_id);
+  Future<void> ambil_or_fecth(int kosId) async {
+    final data = data_laporan_kos[kosId];
+    if (data == null || data.isEmpty || _perlu_muat_ulang[kosId] == true) {
+      await ambil_data_kos_provider(kosId);
     }
   }
 
   /// Fetch ulang hanya jika sebelumnya ditandai stale (mis. setelah bayar/tagihan).
-  Future<void> muat_ulang_jika_perlu(int kos_id) async {
-    if (_perlu_muat_ulang[kos_id] == true) {
-      await ambil_data_kos_provider(kos_id);
+  Future<void> muat_ulang_jika_perlu(int kosId) async {
+    if (_perlu_muat_ulang[kosId] == true) {
+      await ambil_data_kos_provider(kosId);
     }
   }
 
-  Future<void> ambil_data_kos_provider(int kos_id) async {
+  Future<void> ambil_data_kos_provider(int kosId) async {
     try {
       loading = true;
       _pesan_error = null;
       notifyListeners();
       try {
-        data_laporan_kos[kos_id] = await api.laporan_kos(kos_id);
+        data_laporan_kos[kosId] = await api.laporan_kos(kosId);
       } catch (e) {
-        data_laporan_kos[kos_id] = [];
+        data_laporan_kos[kosId] = [];
         _pesan_error = e.toString();
       }
-      _perlu_muat_ulang[kos_id] = false;
+      _perlu_muat_ulang[kosId] = false;
     } catch (e) {
       _pesan_error = e.toString();
     } finally {

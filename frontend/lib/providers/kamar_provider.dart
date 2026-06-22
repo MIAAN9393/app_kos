@@ -60,10 +60,10 @@ class KamarProvider extends ChangeNotifier {
     return msg.isEmpty ? null : msg;
   }
 
-  int? cari_kos_id(int kamar_id) {
+  int? cari_kos_id(int kamarId) {
     for (var element in data_kamar.values) {
       for (var kamar in element) {
-        if (idEquals(kamar['id'], kamar_id)) {
+        if (idEquals(kamar['id'], kamarId)) {
           return entityId(kamar['kos_id']);
         }
       }
@@ -71,18 +71,18 @@ class KamarProvider extends ChangeNotifier {
     return null;
   }
 
-  Map<String, dynamic>? ambil_datasiap_kamar_by_id(int kamar_id) {
+  Map<String, dynamic>? ambil_datasiap_kamar_by_id(int kamarId) {
     for (var list in data_kamar.values) {
       for (var kamar in list) {
-        if (idEquals(kamar['id'], kamar_id)) return kamar;
+        if (idEquals(kamar['id'], kamarId)) return kamar;
       }
     }
     return null;
   }
 
-  void _indexKamarList(int kos_id, List<Map<String, dynamic>> list) {
+  void _indexKamarList(int kosId, List<Map<String, dynamic>> list) {
     final staleIds = kamar_by_id.entries
-        .where((entry) => entityId(entry.value['kos_id']) == kos_id)
+        .where((entry) => entityId(entry.value['kos_id']) == kosId)
         .map((entry) => entry.key)
         .toList();
     for (final id in staleIds) {
@@ -100,10 +100,10 @@ class KamarProvider extends ChangeNotifier {
   }
 
   //FUNGSI API
-  Future<void> ambil_data_kamar_provider(int kos_id) async {
-    if (perubahan_data[kos_id] == null) perubahan_data[kos_id] = true;
+  Future<void> ambil_data_kamar_provider(int kosId) async {
+    if (perubahan_data[kosId] == null) perubahan_data[kosId] = true;
 
-    if (data_kamar.containsKey(kos_id) && perubahan_data[kos_id] == false) {
+    if (data_kamar.containsKey(kosId) && perubahan_data[kosId] == false) {
       return;
     }
     try {
@@ -111,11 +111,11 @@ class KamarProvider extends ChangeNotifier {
       loading = true;
       notifyListeners();
       //aksi
-      data_kamar[kos_id] ??= [];
-      final new_data = await api_kamar.getKamarList(kos_id);
-      data_kamar[kos_id] = new_data ?? [];
-      _indexKamarList(kos_id, data_kamar[kos_id]!);
-      perubahan_data[kos_id] = false;
+      data_kamar[kosId] ??= [];
+      final newData = await api_kamar.getKamarList(kosId);
+      data_kamar[kosId] = newData ?? [];
+      _indexKamarList(kosId, data_kamar[kosId]!);
+      perubahan_data[kosId] = false;
     } catch (e) {
       _pesan_error = e.toString();
     } finally {
@@ -144,8 +144,8 @@ class KamarProvider extends ChangeNotifier {
         kapasitas_kamar,
         fasilitas: fasilitas,
       );
-      final new_data = await api_kamar.getKamarList(kos_id);
-      data_kamar[kos_id] = new_data ?? [];
+      final newData = await api_kamar.getKamarList(kos_id);
+      data_kamar[kos_id] = newData ?? [];
       _indexKamarList(kos_id, data_kamar[kos_id]!);
       perubahan_data[kos_id] = false;
       AppDataInvalidator.setelahKamarBerubah(kosId: kos_id);
@@ -159,26 +159,26 @@ class KamarProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> hapus_kamar_provider(int kamar_id) async {
+  Future<void> hapus_kamar_provider(int kamarId) async {
     try {
       _pesan_sukses = null;
       _pesan_error = null;
       loading = true;
       notifyListeners();
       //ambil kos id
-      var kos_id = cari_kos_id(kamar_id);
+      var kosId = cari_kos_id(kamarId);
 
-      if (kos_id == null) {
+      if (kosId == null) {
         throw Exception("Data kamar tidak ditemukan");
       }
       //aksi
-      _pesan_sukses = await api_kamar.deleteKamar(kamar_id);
-      final new_data = await api_kamar.getKamarList(kos_id);
-      data_kamar[kos_id] = new_data ?? [];
-      _indexKamarList(kos_id, data_kamar[kos_id]!);
-      perubahan_data[kos_id] = false;
-      kamar_by_id.remove(kamar_id);
-      AppDataInvalidator.setelahKamarBerubah(kosId: kos_id);
+      _pesan_sukses = await api_kamar.deleteKamar(kamarId);
+      final newData = await api_kamar.getKamarList(kosId);
+      data_kamar[kosId] = newData ?? [];
+      _indexKamarList(kosId, data_kamar[kosId]!);
+      perubahan_data[kosId] = false;
+      kamar_by_id.remove(kamarId);
+      AppDataInvalidator.setelahKamarBerubah(kosId: kosId);
     } catch (e) {
       _pesan_error = e.toString();
     } finally {
@@ -200,8 +200,8 @@ class KamarProvider extends ChangeNotifier {
       loading = true;
       notifyListeners();
       //ambil kos id
-      var kos_id = cari_kos_id(kamar_id);
-      if (kos_id == null) {
+      var kosId = cari_kos_id(kamar_id);
+      if (kosId == null) {
         throw Exception("Data kamar tidak ditemukan");
       }
       //aksi
@@ -212,11 +212,11 @@ class KamarProvider extends ChangeNotifier {
         kapasitas_kamar,
         fasilitas: fasilitas,
       );
-      final new_data = await api_kamar.getKamarList(kos_id);
-      data_kamar[kos_id] = new_data ?? [];
-      _indexKamarList(kos_id, data_kamar[kos_id]!);
-      perubahan_data[kos_id] = false;
-      AppDataInvalidator.setelahKamarBerubah(kosId: kos_id);
+      final newData = await api_kamar.getKamarList(kosId);
+      data_kamar[kosId] = newData ?? [];
+      _indexKamarList(kosId, data_kamar[kosId]!);
+      perubahan_data[kosId] = false;
+      AppDataInvalidator.setelahKamarBerubah(kosId: kosId);
       return true;
     } catch (e) {
       _pesan_error = e.toString();
@@ -227,7 +227,7 @@ class KamarProvider extends ChangeNotifier {
     }
   }
 
-  List<Map<String, dynamic>> tampilkan_data(String kata_kunci, int kos_id) {
-    return search_kamar(data_kamar, kata_kunci, kos_id);
+  List<Map<String, dynamic>> tampilkan_data(String kataKunci, int kosId) {
+    return search_kamar(data_kamar, kataKunci, kosId);
   }
 }

@@ -244,15 +244,16 @@ exports.ambil_ringkasan = async (pemilik_id) => {
       })
     : []
 
-  const tagihanIds = kontrakIds.length
+  const semuaTagihanRows = kontrakIds.length
     ? (
         await Tagihan.findAll({
           where: { kontrak_id: { [Op.in]: kontrakIds }, lifecycle: "issued" },
-          attributes: ["id"],
+          attributes: ["id", "status_pembayaran"],
           raw: true,
         })
-      ).map((row) => row.id)
+      )
     : []
+  const tagihanIds = semuaTagihanRows.map((row) => row.id)
 
   const pendapatanIni = await hitungPendapatan(tagihanIds, periodeIni)
   const pendapatanLalu = await hitungPendapatan(tagihanIds, periodeLalu)
@@ -419,7 +420,7 @@ exports.ambil_ringkasan = async (pemilik_id) => {
       penyewa_aktif: penyewaAktif,
       kontrak_aktif: kontrakRows.length,
       okupansi_persen: okupansiPersen,
-      tagihan_belum_lunas: tagihanRows.filter((row) => row.status_pembayaran !== "lunas").length,
+      tagihan_belum_lunas: semuaTagihanRows.filter((row) => row.status_pembayaran !== "lunas").length,
       tagihan_telat: statusMap.telat.jumlah,
       pembayaran_bulan_ini: pendapatanIni.jumlah,
     },

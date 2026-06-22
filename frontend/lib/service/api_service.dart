@@ -38,7 +38,8 @@ class ApiService {
     if (status < 200 || status >= 300) {
       String message = 'Permintaan gagal (HTTP $status)';
       if (decoded is Map) {
-        message = decoded['pesan']?.toString() ??
+        message =
+            decoded['pesan']?.toString() ??
             decoded['message']?.toString() ??
             message;
       } else if (body.isNotEmpty) {
@@ -89,6 +90,10 @@ class ApiService {
   //untuk perangkat keras android
   final String baseUrl = "http://192.168.100.6:3000/api";
 
+  String get publicBaseUrl => baseUrl.endsWith('/api')
+      ? baseUrl.substring(0, baseUrl.length - 4)
+      : baseUrl;
+
   Future<Map<String, String>> headers() async {
     final token = await getToken("access_token");
     return {
@@ -104,12 +109,7 @@ class ApiService {
       headers: await headers(),
     );
     final data = _handleResponse(res);
-    var token = await getToken("access_token");
-    print("ini TOKEN : ${token}");
-    return {
-      "statusCode": res.statusCode,
-      "data": data,
-    };
+    return {"statusCode": res.statusCode, "data": data};
   }
 
   Future<dynamic> post(String path, dynamic body) async {
@@ -119,10 +119,7 @@ class ApiService {
       body: jsonEncode(body),
     );
     final data = _handleResponse(res);
-    return {
-      "statusCode": res.statusCode,
-      "data": data,
-    };
+    return {"statusCode": res.statusCode, "data": data};
   }
 
   Future<dynamic> put(String path, dynamic body) async {
@@ -132,10 +129,7 @@ class ApiService {
       body: jsonEncode(body),
     );
     final data = _handleResponse(res);
-    return {
-      "statusCode": res.statusCode,
-      "data": data,
-    };
+    return {"statusCode": res.statusCode, "data": data};
   }
 
   /// Soft-delete di backend memakai PUT (bukan DELETE).
@@ -145,9 +139,6 @@ class ApiService {
       headers: await headers(),
     );
     final data = _handleResponse(res);
-    return {
-      "statusCode": res.statusCode,
-      "data": data,
-    };
+    return {"statusCode": res.statusCode, "data": data};
   }
 }

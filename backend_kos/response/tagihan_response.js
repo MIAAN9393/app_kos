@@ -5,6 +5,7 @@ class TagihanResponse {
 
     this.id = tagihan.id
     this.kode_tagihan = tagihan.kode_tagihan
+    this.public_token = tagihan.public_token
 
     // KONTEKS RELASI (terisi bila relasi Kontrak di-include, mis. ambil_semua_tagihan)
     this.kontrak_id = tagihan.kontrak_id

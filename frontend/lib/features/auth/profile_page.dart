@@ -8,6 +8,7 @@ import 'package:kos_management/core/widgets/app_primary_button.dart';
 import 'package:kos_management/core/widgets/app_text_field.dart';
 import 'package:kos_management/features/auth/widget/custom_appsnackbar.dart';
 import 'package:kos_management/features/notification/notification_settings_cards.dart';
+import 'package:kos_management/features/subscription/subscription_cards.dart';
 import 'package:kos_management/providers/profile_provider.dart';
 import 'package:kos_management/service/api_service.dart';
 import 'package:kos_management/service/auth_service.dart';
@@ -145,6 +146,8 @@ class _ProfilePageState extends State<ProfilePage> {
             onTap: () => _showPasswordDialog(context, provider),
           ),
         const SizedBox(height: AppDesign.spaceMd),
+        const SubscriptionCards(),
+        const SizedBox(height: AppDesign.spaceSm),
         const NotificationSettingsCards(),
         const SizedBox(height: AppDesign.spaceSm),
         const _SectionLabel(

@@ -35,11 +35,11 @@ class PembayaranProvider extends ChangeNotifier {
   }
 
   //FUNGSI API
-  Future<void> ambil_data_pembayaran_provider(int tagihan_id) async {
-    if (perubahan_data[tagihan_id] == null) perubahan_data[tagihan_id] = true;
+  Future<void> ambil_data_pembayaran_provider(int tagihanId) async {
+    if (perubahan_data[tagihanId] == null) perubahan_data[tagihanId] = true;
 
-    if (data_pembayaran.containsKey(tagihan_id) &&
-        perubahan_data[tagihan_id] == false) {
+    if (data_pembayaran.containsKey(tagihanId) &&
+        perubahan_data[tagihanId] == false) {
       return;
     }
     try {
@@ -48,14 +48,14 @@ class PembayaranProvider extends ChangeNotifier {
       notifyListeners();
       //aksi
       // print("ambil data pembayaran");
-      data_pembayaran[tagihan_id] ??= [];
-      final new_data = await api_pembayaran.getPembayaranList(tagihan_id);
+      data_pembayaran[tagihanId] ??= [];
+      final newData = await api_pembayaran.getPembayaranList(tagihanId);
       // print("sudah fecth");
-      data_pembayaran[tagihan_id] = new_data;
-      perubahan_data[tagihan_id] = false;
+      data_pembayaran[tagihanId] = newData;
+      perubahan_data[tagihanId] = false;
       print({
-        'NEW DATA': new_data,
-        'DATA PEMBAYARAN': data_pembayaran[tagihan_id],
+        'NEW DATA': newData,
+        'DATA PEMBAYARAN': data_pembayaran[tagihanId],
       });
     } catch (e) {
       _pesan_error = e.toString();
@@ -91,8 +91,8 @@ class PembayaranProvider extends ChangeNotifier {
   }
 
   Future<void> buat_pembayaran_provider(
-    int tagihan_id,
-    int jumlah_bayar, {
+    int tagihanId,
+    int jumlahBayar, {
     int? kos_id,
   }) async {
     try {
@@ -102,12 +102,12 @@ class PembayaranProvider extends ChangeNotifier {
       notifyListeners();
       //aksi
       _pesan_sukses = await api_pembayaran.createPembayaran(
-        tagihanId: tagihan_id,
-        jumlahBayar: jumlah_bayar,
+        tagihanId: tagihanId,
+        jumlahBayar: jumlahBayar,
       );
-      final new_data = await api_pembayaran.getPembayaranList(tagihan_id);
-      data_pembayaran[tagihan_id] = new_data;
-      perubahan_data[tagihan_id] = false;
+      final newData = await api_pembayaran.getPembayaranList(tagihanId);
+      data_pembayaran[tagihanId] = newData;
+      perubahan_data[tagihanId] = false;
       AppDataInvalidator.setelahPembayaranBerubah();
       LaporanKeuanganProvider.tandaiMuatUlang();
       if (kos_id != null) {
@@ -122,8 +122,8 @@ class PembayaranProvider extends ChangeNotifier {
   }
 
   Future<void> buat_refund_pembayaran_provider(
-    int pembayaran_id,
-    int tagihan_id, {
+    int pembayaranId,
+    int tagihanId, {
     required int jumlah_refund,
     int? kos_id,
   }) async {
@@ -133,12 +133,12 @@ class PembayaranProvider extends ChangeNotifier {
       loading = true;
       notifyListeners();
       _pesan_sukses = await api_pembayaran.createRefund(
-        pembayaranId: pembayaran_id,
+        pembayaranId: pembayaranId,
         jumlahRefund: jumlah_refund,
       );
-      final new_data = await api_pembayaran.getPembayaranList(tagihan_id);
-      data_pembayaran[tagihan_id] = new_data;
-      perubahan_data[tagihan_id] = false;
+      final newData = await api_pembayaran.getPembayaranList(tagihanId);
+      data_pembayaran[tagihanId] = newData;
+      perubahan_data[tagihanId] = false;
       AppDataInvalidator.setelahPembayaranBerubah();
       LaporanKeuanganProvider.tandaiMuatUlang();
       if (kos_id != null) {
@@ -153,8 +153,8 @@ class PembayaranProvider extends ChangeNotifier {
   }
 
   Future<void> batalkan_pembayaran_provider(
-    int pembayaran_id,
-    int tagihan_id,
+    int pembayaranId,
+    int tagihanId,
   ) async {
     throw UnimplementedError(
       'Endpoint batalkan pembayaran belum tersedia di backend',

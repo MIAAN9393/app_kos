@@ -16,6 +16,7 @@ const PengaturanPerpanjanganKontrakOtomatis = require("./pengaturan_perpanjangan
 const FcmToken = require("./fcm_token")
 const FcmNotificationSetting = require("./fcm_notification_setting")
 const SubscriptionPayment = require("./subscription_payment")
+const UserSubscription = require("./user_subscription")
 
 User.hasMany(Kos,{
     foreignKey:"pemilik_id"
@@ -120,6 +121,20 @@ User.hasMany(SubscriptionPayment,{
 })
 SubscriptionPayment.belongsTo(User,{
     foreignKey:"user_id"
+})
+
+User.hasMany(UserSubscription,{
+    foreignKey:"user_id"
+})
+UserSubscription.belongsTo(User,{
+    foreignKey:"user_id"
+})
+
+SubscriptionPayment.hasOne(UserSubscription,{
+    foreignKey:"source_payment_id"
+})
+UserSubscription.belongsTo(SubscriptionPayment,{
+    foreignKey:"source_payment_id"
 })
 
 Tagihan.hasMany(WhatsAppMessageLog,{

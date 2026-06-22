@@ -6,7 +6,7 @@ class AppBarHelper {
     required BuildContext context,
     final int height = 55,
     required TextEditingController controller,
-    required Function(String result_search) ftombol_cari,
+    required Function(String resultSearch) ftombol_cari,
     bool Kosong = false,
     bool Sebagian = false,
     bool penuh = false,
@@ -103,7 +103,7 @@ class AppBarHelper {
                 if (showFilter) ...[
                   const SizedBox(width: 8),
                   tombolFilter(context, Kosong, Sebagian, penuh, (result) {
-                    if (result != null && tangkap_result != null) {
+                    if (tangkap_result != null) {
                       tangkap_result(result);
                     }
                   }),

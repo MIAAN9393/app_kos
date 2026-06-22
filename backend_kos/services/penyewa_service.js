@@ -8,6 +8,7 @@ const { where, Op } = require("sequelize")
 const Kontrak = require("../model/kontrak")
 const { kondisiKontrakMenghuni } = require("../utils/kamar_helper")
 const { validateWhatsAppNumber } = require("../utils/phone_helper")
+const SubscriptionService = require("./subscription_service")
 
 exports.ambil_penyewa = async (pemilik_id, kamar_id) => {
 
@@ -180,6 +181,8 @@ exports.buat_penyewa = async (pemilik_id,body) => {
     if (!nama || !email) {
         throwError("data tidak lengkap", 400, "VALIDATION_ERROR")
     }
+
+    await SubscriptionService.assertCanCreatePenyewa(pemilik_id)
 
     // BUAT PENYEWA
     const penyewa = await Penyewa.create({

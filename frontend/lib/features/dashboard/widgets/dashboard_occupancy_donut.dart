@@ -18,8 +18,8 @@ class DashboardOccupancyDonut extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final terisi = kamarTerisi;
-    final total = totalKamar;
+    final total = totalKamar < 0 ? 0 : totalKamar;
+    final terisi = kamarTerisi.clamp(0, total);
     final kosong = total - terisi;
     final primary = Theme.of(context).colorScheme.primary;
 

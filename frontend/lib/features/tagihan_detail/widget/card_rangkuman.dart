@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 
 
   Widget card_statistik (
-    Color color_backgroun,Color color_border, IconData icon, Color color_icon,
+    Color colorBackgroun,Color colorBorder, IconData icon, Color colorIcon,
     String title, String value, String subtile
   ){
     //KOMPONEN KHUSUS CARD STATIK
     return Expanded(
       flex: 1,
       child: Material(
-          color: color_backgroun,
+          color: colorBackgroun,
           shape: RoundedRectangleBorder(
             side: BorderSide(
-              color: color_border,
+              color: colorBorder,
               width: 0.8
             ),
             borderRadius: BorderRadius.all(Radius.circular(12)),

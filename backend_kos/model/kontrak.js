@@ -13,6 +13,12 @@ const Kontrak = sequelize.define("Kontrak", {
     unique: true,
   },
 
+  public_token: {
+    type: DataTypes.STRING(100),
+    unique: true,
+    allowNull: true,
+  },
+
   penyewa_id: {
     type: DataTypes.INTEGER,
     allowNull: false

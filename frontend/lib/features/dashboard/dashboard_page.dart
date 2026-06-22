@@ -86,6 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
               pendapatanBulanLalu: dashboard.pendapatanBulanLalu,
               deltaPendapatanPersen: dashboard.deltaPendapatanPersen,
               trendPendapatan: dashboard.trendPendapatan,
+              tampilkanTrend: dashboard.tampilkanTrendPendapatan,
             ),
             const SizedBox(height: AppDesign.spaceLg),
 
@@ -105,43 +106,49 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             const SizedBox(height: AppDesign.spaceLg),
 
-            const DashboardCategoryHeader(
-              icon: Icons.meeting_room_rounded,
-              title: 'Hunian',
-              subtitle: 'Okupansi kamar',
-            ),
-            DashboardOccupancyDonut(
-              totalKamar: dashboard.totalKamar,
-              kamarTerisi: dashboard.kamarTerisi,
-              okupansiPersen: dashboard.okupansiPersen,
-            ),
-            const SizedBox(height: AppDesign.spaceMd),
-            DashboardOccupancyBars(
-              totalKamar: dashboard.totalKamar,
-              kamarTerisi: dashboard.kamarTerisi,
-              items: dashboard.okupansiPerKos,
-            ),
-            const SizedBox(height: AppDesign.spaceLg),
+            if (dashboard.tampilkanHunianDetail) ...[
+              const DashboardCategoryHeader(
+                icon: Icons.meeting_room_rounded,
+                title: 'Hunian',
+                subtitle: 'Okupansi kamar',
+              ),
+              DashboardOccupancyDonut(
+                totalKamar: dashboard.totalKamar,
+                kamarTerisi: dashboard.kamarTerisi,
+                okupansiPersen: dashboard.okupansiPersen,
+              ),
+              const SizedBox(height: AppDesign.spaceMd),
+              DashboardOccupancyBars(
+                totalKamar: dashboard.totalKamar,
+                kamarTerisi: dashboard.kamarTerisi,
+                items: dashboard.okupansiPerKos,
+              ),
+              const SizedBox(height: AppDesign.spaceLg),
+            ],
 
-            const DashboardCategoryHeader(
-              icon: Icons.receipt_long_rounded,
-              title: 'Tagihan',
-              subtitle: 'Status & prioritas',
-            ),
-            DashboardTagihanStatus(
-              periodeLabel: dashboard.periodeLabel,
-              statusTagihan: dashboard.statusTagihan,
-            ),
-            const SizedBox(height: AppDesign.spaceMd),
-            DashboardTagihanAlert(items: dashboard.tagihanPerhatian),
-            const SizedBox(height: AppDesign.spaceLg),
+            if (dashboard.tampilkanTagihanDetail) ...[
+              const DashboardCategoryHeader(
+                icon: Icons.receipt_long_rounded,
+                title: 'Tagihan',
+                subtitle: 'Status & prioritas',
+              ),
+              DashboardTagihanStatus(
+                periodeLabel: dashboard.periodeLabel,
+                statusTagihan: dashboard.statusTagihan,
+              ),
+              const SizedBox(height: AppDesign.spaceMd),
+              DashboardTagihanAlert(items: dashboard.tagihanPerhatian),
+              const SizedBox(height: AppDesign.spaceLg),
+            ],
 
-            const DashboardCategoryHeader(
-              icon: Icons.history_rounded,
-              title: 'Aktivitas',
-              subtitle: 'Kejadian terbaru',
-            ),
-            DashboardActivityList(items: dashboard.aktivitasTerbaru),
+            if (dashboard.tampilkanAktivitasDetail) ...[
+              const DashboardCategoryHeader(
+                icon: Icons.history_rounded,
+                title: 'Aktivitas',
+                subtitle: 'Kejadian terbaru',
+              ),
+              DashboardActivityList(items: dashboard.aktivitasTerbaru),
+            ],
           ],
         ),
       ),

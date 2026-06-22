@@ -23,6 +23,7 @@ import 'package:kos_management/providers/kos_provider.dart';
 import 'package:kos_management/providers/pembayaran_provider.dart';
 import 'package:kos_management/providers/penyewa_provider.dart';
 import 'package:kos_management/providers/tagihan_provider.dart';
+import 'package:kos_management/service/api_service.dart';
 import 'package:kos_management/features/tagihan/widget/tagihan_items_list.dart';
 import 'package:kos_management/utils/provider_feedback.dart';
 import 'package:kos_management/utils/sisa_hari.dart';
@@ -187,30 +188,45 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
     }
   }
 
-  Future<void> _sendInvoiceWhatsApp(
-    Map<String, dynamic> tagihan,
-    List<Map<String, dynamic>> payments,
-  ) async {
+  Future<void> _sendInvoiceWhatsApp(Map<String, dynamic> tagihan) async {
     if (_sendingInvoiceWhatsApp) return;
     setState(() => _sendingInvoiceWhatsApp = true);
     try {
-      await _shareInvoicePdf(tagihan, payments);
-      if (!mounted) return;
-
       final penyewa = context
           .read<PenyewaProvider>()
           .penyewa_by_id[widget.penyewaId];
-      final kode = '${tagihan['kode_tagihan'] ?? widget.tagihanId}'.trim();
+      final kode = '${tagihan['kode_tagihan'] ?? ''}'.trim();
+      final token = '${tagihan['public_token'] ?? ''}'.trim();
+      if (kode.isEmpty || token.isEmpty) {
+        AppSnackbar.error(
+          context,
+          'Link PDF publik belum tersedia. Muat ulang tagihan.',
+        );
+        return;
+      }
+
+      final pdfUrl =
+          '${ApiService().publicBaseUrl}/public/tagihan/${Uri.encodeComponent(kode)}/pdf?token=${Uri.encodeQueryComponent(token)}';
       final opened = await WhatsAppDeepLinkService.openChat(
         phoneNumber: penyewa?['no_telpon']?.toString(),
-        message:
-            '${WhatsAppDeepLinkService.tenantGreeting(penyewa?['nama']?.toString())}, berikut invoice tagihan $kode.',
+        message: [
+          '${WhatsAppDeepLinkService.tenantGreeting(penyewa?['nama']?.toString())}, berikut invoice tagihan.',
+          '',
+          'Nama: ${penyewa?['nama'] ?? '-'}',
+          'Kode tagihan: $kode',
+          'Periode: ${_tanggalPendek(tagihan['periode_awal'])} - ${_tanggalPendek(tagihan['periode_akhir'])}',
+          'Jatuh tempo: ${_tanggalPendek(tagihan['jatuh_tempo'])}',
+          'Total tagihan: ${AppDesign.formatRupiah(tagihan['total_tagihan'])}',
+          'Status: ${tagihan['status_pembayaran'] ?? '-'}',
+          '',
+          'PDF invoice: $pdfUrl',
+        ].join('\n'),
       );
       if (!mounted) return;
       if (opened) {
         AppSnackbar.success(
           context,
-          'PDF invoice siap dibagikan dan chat WhatsApp dibuka.',
+          'Chat WhatsApp dibuka dengan link PDF invoice.',
         );
       } else {
         AppSnackbar.error(
@@ -224,6 +240,12 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
     } finally {
       if (mounted) setState(() => _sendingInvoiceWhatsApp = false);
     }
+  }
+
+  String _tanggalPendek(dynamic value) {
+    final text = '${value ?? ''}'.trim();
+    if (text.isEmpty || text == 'null') return '-';
+    return text.split('T').first;
   }
 
   void _dialogBayar() {
@@ -490,7 +512,7 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
                               : Icons.send_outlined,
                           onPressed: _sendingInvoiceWhatsApp
                               ? null
-                              : () => _sendInvoiceWhatsApp(tagihan, payments),
+                              : () => _sendInvoiceWhatsApp(tagihan),
                         ),
                         const SizedBox(height: AppDesign.spaceSm),
                         AppPrimaryButton(

@@ -10,6 +10,7 @@ class DashboardFeaturedRevenue extends StatelessWidget {
   final int pendapatanBulanLalu;
   final int deltaPendapatanPersen;
   final List<DashboardTrendBulan> trendPendapatan;
+  final bool tampilkanTrend;
 
   const DashboardFeaturedRevenue({
     super.key,
@@ -18,14 +19,13 @@ class DashboardFeaturedRevenue extends StatelessWidget {
     required this.pendapatanBulanLalu,
     required this.deltaPendapatanPersen,
     required this.trendPendapatan,
+    this.tampilkanTrend = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final trend = trendPendapatan.isEmpty
-        ? DashboardDummy.trendPendapatan
-        : trendPendapatan;
+    final trend = trendPendapatan;
     final delta = deltaPendapatanPersen;
     final naik = delta >= 0;
 
@@ -114,14 +114,24 @@ class DashboardFeaturedRevenue extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.75),
             ),
           ),
-          const SizedBox(height: AppDesign.spaceMd),
-          DashboardLineChart(
-            points: points,
-            color: Colors.white,
-            labelTerang: true,
-            height: 150,
-            valueLabelBuilder: (value) => '${_formatJuta(value)} jt',
-          ),
+          if (tampilkanTrend) ...[
+            const SizedBox(height: AppDesign.spaceMd),
+            if (points.isEmpty)
+              Text(
+                'Trend pendapatan belum tersedia',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.75),
+                ),
+              )
+            else
+              DashboardLineChart(
+                points: points,
+                color: Colors.white,
+                labelTerang: true,
+                height: 150,
+                valueLabelBuilder: (value) => '${_formatJuta(value)} jt',
+              ),
+          ],
         ],
       ),
     );

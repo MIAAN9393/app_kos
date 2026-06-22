@@ -9,6 +9,7 @@ class KontrakResponse {
       kontrak.kode_kontrak ??
       (typeof kontrak.get === "function" ? kontrak.get("kode_kontrak") : null)
     this.kode_kontrak = kode != null && String(kode).trim() !== "" ? String(kode).trim() : null
+    this.public_token = kontrak.public_token
 
     this.penyewa_id = kontrak.penyewa_id
     this.kamar_id = kontrak.kamar_id

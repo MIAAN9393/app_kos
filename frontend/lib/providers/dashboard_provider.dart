@@ -34,6 +34,10 @@ class DashboardProvider extends ChangeNotifier {
   List<DashboardStatusTagihan> statusTagihan = const [];
   List<DashboardAktivitas> aktivitasTerbaru = const [];
   List<DashboardTagihanPerhatian> tagihanPerhatian = const [];
+  bool tampilkanTrendPendapatan = false;
+  bool tampilkanHunianDetail = false;
+  bool tampilkanTagihanDetail = false;
+  bool tampilkanAktivitasDetail = false;
 
   DashboardProvider() {
     _instance = this;
@@ -83,6 +87,10 @@ class DashboardProvider extends ChangeNotifier {
     final pendapatan = _map(data['pendapatan']);
     final okupansi = _map(data['okupansi']);
     final tagihan = _map(data['tagihan']);
+    tampilkanTrendPendapatan = pendapatan.containsKey('trend');
+    tampilkanHunianDetail = data.containsKey('okupansi');
+    tampilkanTagihanDetail = data.containsKey('tagihan');
+    tampilkanAktivitasDetail = data.containsKey('aktivitas');
 
     namaPemilik = '${pemilik['nama'] ?? DashboardDummy.namaPemilik}';
     periodeLabel = '${periode['label'] ?? DashboardDummy.periodeLabel}';

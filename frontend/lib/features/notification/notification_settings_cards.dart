@@ -79,7 +79,7 @@ class _NotificationSettingsCardsState extends State<NotificationSettingsCards> {
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          initiallyExpanded: true,
+          initiallyExpanded: false,
           tilePadding: const EdgeInsets.symmetric(
             horizontal: AppDesign.spaceMd,
             vertical: AppDesign.spaceXs,

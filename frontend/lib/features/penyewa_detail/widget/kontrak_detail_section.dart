@@ -23,6 +23,7 @@ import 'package:kos_management/providers/kamar_provider.dart';
 import 'package:kos_management/providers/kontrak_provider.dart';
 import 'package:kos_management/providers/kos_provider.dart';
 import 'package:kos_management/providers/penyewa_provider.dart';
+import 'package:kos_management/service/api_service.dart';
 import 'package:kos_management/utils/json_parse.dart';
 import 'package:kos_management/utils/kontrak_aksi_rules.dart';
 import 'package:kos_management/utils/kontrak_status.dart';
@@ -226,23 +227,48 @@ class _KontrakDetailSectionState extends State<KontrakDetailSection> {
     if (_sendingKontrakWhatsApp) return;
     setState(() => _sendingKontrakWhatsApp = true);
     try {
-      await _shareKontrakPdf(kontrak);
-      if (!mounted) return;
-
       final penyewa =
           context.read<PenyewaProvider>().penyewa_by_id[widget.idPenyewa] ??
           context.read<PenyewaProvider>().semua_data_penyewa[widget.idPenyewa];
       final kode = '${kontrak['kode_kontrak'] ?? kontrak['id'] ?? ''}'.trim();
+      final token = '${kontrak['public_token'] ?? ''}'.trim();
+      if (kode.isEmpty || token.isEmpty) {
+        AppSnackbar.error(
+          context,
+          'Link PDF publik belum tersedia. Muat ulang kontrak.',
+        );
+        return;
+      }
+
+      final kamarId = entityId(kontrak['kamar_id']) ?? widget.idKamar;
+      final kamar = context.read<KamarProvider>().ambil_datasiap_kamar_by_id(
+        kamarId,
+      );
+      final nomorKamar =
+          '${kamar?['nomor'] ?? kamar?['nama_kamar'] ?? kontrak['kamar_id'] ?? '-'}';
+      final pdfUrl =
+          '${ApiService().publicBaseUrl}/public/kontrak/${Uri.encodeComponent(kode)}/pdf?token=${Uri.encodeQueryComponent(token)}';
       final opened = await WhatsAppDeepLinkService.openChat(
         phoneNumber: penyewa?['no_telpon']?.toString(),
-        message:
-            '${WhatsAppDeepLinkService.tenantGreeting(penyewa?['nama']?.toString())}, berikut file kontrak sewa${kode.isEmpty ? '' : ' $kode'}.',
+        message: [
+          '${WhatsAppDeepLinkService.tenantGreeting(penyewa?['nama']?.toString())}, berikut detail kontrak sewa.',
+          '',
+          'Nama: ${penyewa?['nama'] ?? '-'}',
+          'Kode kontrak: $kode',
+          'Kamar: $nomorKamar',
+          'Tanggal mulai: ${_tanggal(kontrak['tanggal_mulai'])}',
+          'Tanggal selesai: ${_tanggal(kontrak['tanggal_selesai'])}',
+          'Harga sewa: ${AppDesign.formatRupiah(kontrak['harga_sewa'])}',
+          'Siklus: ${_labelSiklus('${kontrak['siklus'] ?? ''}')}',
+          '',
+          'PDF kontrak: $pdfUrl',
+        ].join('\n'),
       );
       if (!mounted) return;
       if (opened) {
         AppSnackbar.success(
           context,
-          'PDF kontrak siap dibagikan dan chat WhatsApp dibuka.',
+          'Chat WhatsApp dibuka dengan link PDF kontrak.',
         );
       } else {
         AppSnackbar.error(

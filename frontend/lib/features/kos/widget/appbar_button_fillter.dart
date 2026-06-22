@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kos_management/core/color_costum/color_costum.dart';
 
 Widget tombolFilter(
   BuildContext context,
   bool kosong,
-  bool Sebagian,
+  bool sebagian,
   bool penuh,
-  Function(Map<String, bool>) tangkap_result,
+  Function(Map<String, bool>) tangkapResult,
 ) {
   return Row(
     children: [
@@ -16,7 +15,7 @@ Widget tombolFilter(
         color: Theme.of(context).colorScheme.onPrimary,
         onPressed: () async {
           bool localKosong = kosong;
-          bool localSebagian = Sebagian;
+          bool localSebagian = sebagian;
           bool localPenuh = penuh;
           final result = await showModalBottomSheet(
             context: context,
@@ -27,7 +26,6 @@ Widget tombolFilter(
             builder: (context) {
               return StatefulBuilder(
                 builder: (context, setState) {
-                  final colorScheme = Theme.of(context).colorScheme;
                   return SafeArea(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -138,7 +136,7 @@ Widget tombolFilter(
 
           //KIRIM NILAI KELUAR
           if (result != null) {
-            tangkap_result(result);
+            tangkapResult(result);
           }
         },
       ),

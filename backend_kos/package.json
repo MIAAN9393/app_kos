@@ -13,10 +13,13 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.10.0",
+    "cors": "^2.8.6",
     "cron": "^4.4.0",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
     "google-auth-library": "^10.7.0",
+    "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "midtrans-client": "^1.4.3",
     "multer": "^2.1.1",

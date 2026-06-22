@@ -34,26 +34,29 @@ class DashboardTagihanStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = statusTagihan.isEmpty
-        ? DashboardDummy.statusTagihan
-        : statusTagihan;
+    final data = statusTagihan;
     final total = data.fold<int>(0, (s, e) => s + e.jumlah);
 
     return DashboardSectionCard(
       title: 'Status tagihan',
       subtitle: 'Periode $periodeLabel',
-      child: DashboardDonutChart(
-        centerValue: '$total',
-        centerLabel: 'tagihan',
-        segments: [
-          for (final s in data)
-            DonutSegment(
-              label: s.label,
-              value: s.jumlah.toDouble(),
-              color: _warna(s.status),
+      child: data.isEmpty
+          ? Text(
+              'Belum ada data status tagihan',
+              style: AppDesign.bodyMuted(context),
+            )
+          : DashboardDonutChart(
+              centerValue: '$total',
+              centerLabel: 'tagihan',
+              segments: [
+                for (final s in data)
+                  DonutSegment(
+                    label: s.label,
+                    value: s.jumlah.toDouble(),
+                    color: _warna(s.status),
+                  ),
+              ],
             ),
-        ],
-      ),
     );
   }
 }

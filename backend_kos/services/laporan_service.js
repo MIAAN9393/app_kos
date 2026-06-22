@@ -27,14 +27,17 @@ async function ambil_pembayaran_map_untuk_tagihan(tagihan_ids) {
   return kelompokkanPembayaranPerTagihan(rows)
 }
 
-/** Piutang aktual global: semua tagihan issued milik pemilik (total − pembayaran net). */
-async function hitung_total_sisa_piutang(kontrak_ids) {
+/** Piutang aktual dalam rentang jatuh tempo terpilih (total − pembayaran net). */
+async function hitung_total_sisa_piutang(kontrak_ids, tanggal_awal, tanggal_akhir) {
   if (!kontrak_ids.length) return 0
 
   const tagihan_rows = await Tagihan.findAll({
     where: {
       kontrak_id: { [Op.in]: kontrak_ids },
       lifecycle: "issued",
+      jatuh_tempo: {
+        [Op.between]: [tanggal_awal, tanggal_akhir],
+      },
     },
     attributes: ["id", "total_tagihan"],
     raw: true,
@@ -248,8 +251,12 @@ exports.ambil_laporan_keuangan = async (pemilik_id, query) => {
   // console.log("TAGIHAN UANG MASA PERIODE",total_bayaran_masa_periode)
 
 
-  // Total sisa = piutang aktual global (semua tagihan issued, total − pembayaran net)
-  const total_yang_sisa = await hitung_total_sisa_piutang(kontrak_ids)
+  // Total sisa = piutang aktual pada tagihan jatuh tempo di rentang filter.
+  const total_yang_sisa = await hitung_total_sisa_piutang(
+    kontrak_ids,
+    tanggal_awal,
+    tanggal_akhir
+  )
   const total_nominal_transaksi = agregat.per_status.valid.nominal + agregat.per_status.refund.nominal
 
   return LaporanKeuanganResponse.build({

@@ -1,8 +1,11 @@
 const tagihanOtomatisService = require("../services/pengaturan_tagihan_otomatis_service")
 const perpanjanganOtomatisService = require("../services/pengaturan_perpanjangan_kontrak_otomatis_service")
+const SubscriptionService = require("../services/subscription_service")
 
 exports.ambil_tagihan_otomatis = async (req, res, next) => {
   try {
+    await SubscriptionService.assertFeature(req.user.id, "tagihan_otomatis")
+
     const data = await tagihanOtomatisService.ambilPengaturanTagihanOtomatis(
       req.user.id,
       req.params.kontrak_id
@@ -21,6 +24,8 @@ exports.ambil_tagihan_otomatis = async (req, res, next) => {
 
 exports.simpan_tagihan_otomatis = async (req, res, next) => {
   try {
+    await SubscriptionService.assertFeature(req.user.id, "tagihan_otomatis")
+
     const data = await tagihanOtomatisService.simpanPengaturanTagihanOtomatis(
       req.user.id,
       req.params.kontrak_id,
@@ -40,6 +45,8 @@ exports.simpan_tagihan_otomatis = async (req, res, next) => {
 
 exports.ubah_status_tagihan_otomatis = async (req, res, next) => {
   try {
+    await SubscriptionService.assertFeature(req.user.id, "tagihan_otomatis")
+
     const data = await tagihanOtomatisService.ubahStatusPengaturanTagihanOtomatis(
       req.user.id,
       req.params.kontrak_id,
@@ -59,6 +66,8 @@ exports.ubah_status_tagihan_otomatis = async (req, res, next) => {
 
 exports.ambil_perpanjangan_otomatis = async (req, res, next) => {
   try {
+    await SubscriptionService.assertFeature(req.user.id, "perpanjangan_otomatis")
+
     const data =
       await perpanjanganOtomatisService.ambilPengaturanPerpanjanganKontrakOtomatis(
         req.user.id,
@@ -78,6 +87,8 @@ exports.ambil_perpanjangan_otomatis = async (req, res, next) => {
 
 exports.simpan_perpanjangan_otomatis = async (req, res, next) => {
   try {
+    await SubscriptionService.assertFeature(req.user.id, "perpanjangan_otomatis")
+
     const data =
       await perpanjanganOtomatisService.simpanPengaturanPerpanjanganKontrakOtomatis(
         req.user.id,
@@ -98,6 +109,8 @@ exports.simpan_perpanjangan_otomatis = async (req, res, next) => {
 
 exports.ubah_status_perpanjangan_otomatis = async (req, res, next) => {
   try {
+    await SubscriptionService.assertFeature(req.user.id, "perpanjangan_otomatis")
+
     const data =
       await perpanjanganOtomatisService.ubahStatusPengaturanPerpanjanganKontrakOtomatis(
         req.user.id,

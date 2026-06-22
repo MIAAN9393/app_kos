@@ -8,8 +8,8 @@ class KamarService {
   // KAMAR
   // =========================
 
-  Future<dynamic> getKamarList(int kos_id) async {
-    final res = await api.get("kamar/ambil_kamar/$kos_id");
+  Future<dynamic> getKamarList(int kosId) async {
+    final res = await api.get("kamar/ambil_kamar/$kosId");
     if (res['statusCode'] != 200) {
       throw Exception(res['data']['pesan'] ?? "ambil kamar gagal");
     }
@@ -23,21 +23,21 @@ class KamarService {
   }
 
   Future<dynamic> createKamar(
-    int kos_id,
-    String nama_kamar,
-    int harga_kamar,
-    int kapasitas_kamar, {
+    int kosId,
+    String namaKamar,
+    int hargaKamar,
+    int kapasitasKamar, {
     List<String>? fasilitas,
   }) async {
     final body = <String, dynamic>{
-      'nomor': nama_kamar,
-      'harga': harga_kamar,
-      'kapasitas': kapasitas_kamar,
+      'nomor': namaKamar,
+      'harga': hargaKamar,
+      'kapasitas': kapasitasKamar,
     };
     if (fasilitas != null && fasilitas.isNotEmpty) {
       body['fasilitas'] = fasilitas;
     }
-    final res = await api.post('kamar/buat_kamar/$kos_id', body);
+    final res = await api.post('kamar/buat_kamar/$kosId', body);
     if (res['statusCode'] != 200) {
       throw Exception(res['data']['pesan'] ?? "buat kamar gagal");
     }
@@ -46,15 +46,15 @@ class KamarService {
 
   Future<dynamic> updateKamar(
     int kamarId,
-    String nama_kamar,
-    int harga_kamar,
-    int kapasitas_kamar, {
+    String namaKamar,
+    int hargaKamar,
+    int kapasitasKamar, {
     List<String>? fasilitas,
   }) async {
     final body = <String, dynamic>{
-      'nomor': nama_kamar,
-      'harga': harga_kamar,
-      'kapasitas': kapasitas_kamar,
+      'nomor': namaKamar,
+      'harga': hargaKamar,
+      'kapasitas': kapasitasKamar,
       'fasilitas': fasilitas ?? [],
     };
     final res = await api.put('kamar/edit_kamar/$kamarId', body);

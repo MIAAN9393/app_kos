@@ -51,20 +51,20 @@ class _TestPageState extends State<TestPage> {
                                   child:Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      TextButton(onPressed: (){}, child: Text("batalkan",
-                                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)
-                                      ),
+                                      TextButton(onPressed: (){},
                                         style: TextButton.styleFrom(
                                           backgroundColor: Theme.of(context).colorScheme.error
-                                        ),
+                                        ), child: Text("batalkan",
+                                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)
+                                      ),
                                       ),
                                       SizedBox(width: 10,),
-                                      TextButton(onPressed: (){}, child: Text("terapkan",
-                                        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)
-                                      ),
+                                      TextButton(onPressed: (){},
                                         style: TextButton.styleFrom(
                                           backgroundColor: Theme.of(context).colorScheme.primary
-                                        ),
+                                        ), child: Text("terapkan",
+                                        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)
+                                      ),
                                       )
                                     ],
                                   )

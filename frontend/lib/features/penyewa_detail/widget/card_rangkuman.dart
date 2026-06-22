@@ -46,7 +46,7 @@ Map hitung_rangkuman ({
   var tagihan = aktif.fold(0, (p, v) => p + angka(v['total_tagihan'] ?? v['harga_sewa']));
   var bayar = aktif.fold(0, (p, v) => p + angka(v['total_dibayar']));
   var sisa = tagihan - bayar;
-  var jml_tagihan_sisa = aktif.where((v) {
+  var jmlTagihanSisa = aktif.where((v) {
     final st = TagihanRules.normalizeBayar(v['status_pembayaran']);
     return st != TagihanRules.bayarLunas;
   });
@@ -55,24 +55,24 @@ Map hitung_rangkuman ({
     "tagihan": tagihan,
     "bayar": bayar,
     "sisa": sisa,
-    "tagihan_sisa": jml_tagihan_sisa.length,
+    "tagihan_sisa": jmlTagihanSisa.length,
     "jumlah_aktif": aktif.length,
   };
 }
 
 
   Widget card_statistik (
-    Color color_backgroun,Color color_border, IconData icon, Color color_icon,
+    Color colorBackgroun,Color colorBorder, IconData icon, Color colorIcon,
     String title, String value, String subtile
   ){
     //KOMPONEN KHUSUS CARD STATIK
     return Expanded(
       flex: 1,
       child: Material(
-          color: color_backgroun,
+          color: colorBackgroun,
           shape: RoundedRectangleBorder(
             side: BorderSide(
-              color: color_border,
+              color: colorBorder,
               width: 0.8
             ),
             borderRadius: BorderRadius.all(Radius.circular(12)),

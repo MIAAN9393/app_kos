@@ -7,6 +7,7 @@ const Kontrak = require("../model/kontrak")
 const Tagihan = require("../model/tagihan")
 const Pembayaran = require("../model/pembayaran")
 const { Op } = require("sequelize")
+const SubscriptionService = require("./subscription_service")
 
 exports.ambil_kos = async (pemilik_id)=>{
    
@@ -95,6 +96,8 @@ exports.buat_kos = async (pemilik_id,body)=>{
     if(!nama_kos || !alamat || !deskripsi){
         throwError("data tidak lengkap",400,"VALIDATION_ERROR")
     }
+
+    await SubscriptionService.assertCanCreateKos(pemilik_id)
 
     const t = await sequelize.transaction()
 

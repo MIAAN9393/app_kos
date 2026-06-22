@@ -17,6 +17,7 @@ const Pembayaran = require("../model/pembayaran");
 const TagihanResponse = require("../response/tagihan_response");
 const { ambil_tanggal_doang } = require("../utils/waktu");
 const WhatsAppService = require("./whatsapp_service")
+const { buatPublicToken, pastikanPublicToken } = require("../utils/public_token")
 
 function parseDateOnly(value) {
   if (!value) return null
@@ -96,6 +97,8 @@ exports.ambil_tagihan = async (pemilik_id,kontrak_id) => {
   if(!list_tagihan || list_tagihan.length == 0)
     return []
 
+  await Promise.all(list_tagihan.map((tagihan) => pastikanPublicToken(tagihan)))
+
   const tagihan_ids = list_tagihan.map(i => i.id)
 
   const list_item = await TagihanItem.findAll({
@@ -162,6 +165,8 @@ exports.ambil_semua_tagihan = async (pemilik_id) => {
 
   if (!list_tagihan || list_tagihan.length == 0)
     return []
+
+  await Promise.all(list_tagihan.map((tagihan) => pastikanPublicToken(tagihan)))
 
   const tagihan_ids = list_tagihan.map(i => i.id)
 
@@ -297,6 +302,7 @@ exports.buat_tagihan = async (pemilik_id,body) => {
     //AKSI
     const tagihan = await Tagihan.create({
         kode_tagihan,
+        public_token: buatPublicToken(),
         kontrak_id,
         periode_awal,
         periode_akhir,

@@ -32,7 +32,7 @@ const Kamar = sequelize.define("kamar",{
         allowNull:true
     }
 },{
-    tableName:"Kamar",
+    tableName:"kamar",
     timestamps:false
 });
 

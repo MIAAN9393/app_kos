@@ -168,20 +168,20 @@ Widget _buildDateChip(IconData icon, String label, String value) {
 
 Widget actionButton(
   IconData icon,
-  Color color_background,
-  Color color_icon,
+  Color colorBackground,
+  Color colorIcon,
   VoidCallback onTap,
 ) {
   //KOMPONEN BEBAS
   return Material(
-    color: color_background.withValues(alpha: 0.123),
+    color: colorBackground.withValues(alpha: 0.123),
     borderRadius: BorderRadius.circular(12),
     child: InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Icon(icon, size: 18, color: color_icon),
+        child: Icon(icon, size: 18, color: colorIcon),
       ),
     ),
   );

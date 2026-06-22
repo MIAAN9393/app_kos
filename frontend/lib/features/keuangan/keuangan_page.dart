@@ -278,7 +278,7 @@ class _KeuanganPageState extends State<KeuanganPage> {
                     ),
                     KeuanganLaporanBaris(
                       label: 'Refund pembayaran',
-                      nilai: '${AppDesign.formatRupiah(k.refund.nominal)}',
+                      nilai: AppDesign.formatRupiah(k.refund.nominal),
                       warnaNilai: AppDesign.danger,
                       icon: Icons.replay_rounded,
                       subtitle: 'Total pengembalian pembayaran',
@@ -322,7 +322,7 @@ class _KeuanganPageState extends State<KeuanganPage> {
                       tebal: true,
                       warnaNilai: AppDesign.warning,
                       icon: Icons.account_balance_outlined,
-                      subtitle: 'Belum dibayar (total − uang masuk)',
+                      subtitle: 'Belum dibayar pada periode ini',
                     ),
                     KeuanganLaporanBaris(
                       label: 'Lunas',

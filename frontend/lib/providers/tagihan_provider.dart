@@ -60,14 +60,14 @@ class TagihanProvider extends ChangeNotifier {
   }
 
   //status flag
-  void ubah_status_flag_true(int penyewa_id) {
-    perubahan_data[penyewa_id] = true;
+  void ubah_status_flag_true(int penyewaId) {
+    perubahan_data[penyewaId] = true;
     notifyListeners();
   }
 
-  Future<void> _tandai_laporan_kos_perlu_muat_ulang(int penyewa_id) async {
+  Future<void> _tandai_laporan_kos_perlu_muat_ulang(int penyewaId) async {
     try {
-      final kontrak = await api_kontrak.getKontrak(penyewa_id);
+      final kontrak = await api_kontrak.getKontrak(penyewaId);
       if (kontrak == null) return;
       final kamar = kontrak['kamar'];
       final kosId = kamar is Map
@@ -80,26 +80,26 @@ class TagihanProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
-  int? cari_penyewa_id_bytagihan(int tagihan_id) {
+  int? cari_penyewa_id_bytagihan(int tagihanId) {
     for (var entry in data_tagihan.entries) {
       for (var tagihan in entry.value) {
-        if (idEquals(tagihan['id'], tagihan_id)) return entry.key;
+        if (idEquals(tagihan['id'], tagihanId)) return entry.key;
       }
     }
-    final indexed = tagihan_by_id[tagihan_id];
+    final indexed = tagihan_by_id[tagihanId];
     final penyewaId = indexed == null ? null : entityId(indexed['penyewa_id']);
     if (penyewaId != null) return penyewaId;
     return null;
   }
 
-  Map<String, dynamic>? ambil_datasiap_tagihan_by_id(int tagihan_id) {
-    final id = entityId(tagihan_id);
+  Map<String, dynamic>? ambil_datasiap_tagihan_by_id(int tagihanId) {
+    final id = entityId(tagihanId);
     if (id != null && tagihan_by_id.containsKey(id)) {
       return tagihan_by_id[id];
     }
     for (var list in data_tagihan.values) {
       for (var tagihan in list) {
-        if (idEquals(tagihan['id'], tagihan_id)) return tagihan;
+        if (idEquals(tagihan['id'], tagihanId)) return tagihan;
       }
     }
     return null;
@@ -139,9 +139,9 @@ class TagihanProvider extends ChangeNotifier {
     return data_tagihan_by_kontrak[kontrakId] ?? [];
   }
 
-  void _indexTagihanList(int penyewa_id, List<Map<String, dynamic>> list) {
+  void _indexTagihanList(int penyewaId, List<Map<String, dynamic>> list) {
     for (var tagihan in list) {
-      tagihan['penyewa_id'] = penyewa_id;
+      tagihan['penyewa_id'] = penyewaId;
       final id = entityId(tagihan['id']);
       if (id == null) continue;
       tagihan['id'] = id;
@@ -150,14 +150,14 @@ class TagihanProvider extends ChangeNotifier {
   }
 
   void _indexTagihanKontrakList(
-    int kontrak_id,
-    int penyewa_id,
+    int kontrakId,
+    int penyewaId,
     List<Map<String, dynamic>> list,
   ) {
-    data_tagihan_by_kontrak[kontrak_id] = list;
+    data_tagihan_by_kontrak[kontrakId] = list;
     for (var tagihan in list) {
-      tagihan['kontrak_id'] = kontrak_id;
-      tagihan['penyewa_id'] = penyewa_id;
+      tagihan['kontrak_id'] = kontrakId;
+      tagihan['penyewa_id'] = penyewaId;
       final id = entityId(tagihan['id']);
       if (id == null) continue;
       tagihan['id'] = id;
@@ -166,11 +166,11 @@ class TagihanProvider extends ChangeNotifier {
   }
 
   //FUNGSI API
-  Future<void> ambil_data_tagihan_provider(int penyewa_id) async {
-    if (perubahan_data[penyewa_id] == null) perubahan_data[penyewa_id] = true;
+  Future<void> ambil_data_tagihan_provider(int penyewaId) async {
+    if (perubahan_data[penyewaId] == null) perubahan_data[penyewaId] = true;
 
-    if (data_tagihan.containsKey(penyewa_id) &&
-        perubahan_data[penyewa_id] == false) {
+    if (data_tagihan.containsKey(penyewaId) &&
+        perubahan_data[penyewaId] == false) {
       return;
     }
     try {
@@ -178,24 +178,24 @@ class TagihanProvider extends ChangeNotifier {
       loading = true;
       notifyListeners();
       //aksi
-      data_tagihan[penyewa_id] ??= [];
-      final kontrak = await api_kontrak.getKontrak(penyewa_id);
+      data_tagihan[penyewaId] ??= [];
+      final kontrak = await api_kontrak.getKontrak(penyewaId);
       if (kontrak == null || kontrak['id'] == null) {
-        data_tagihan[penyewa_id] = [];
-        perubahan_data[penyewa_id] = false;
+        data_tagihan[penyewaId] = [];
+        perubahan_data[penyewaId] = false;
         return;
       }
       final kontrakId = intFromJson(kontrak['id']);
       if (kontrakId == null) {
-        data_tagihan[penyewa_id] = [];
-        perubahan_data[penyewa_id] = false;
+        data_tagihan[penyewaId] = [];
+        perubahan_data[penyewaId] = false;
         return;
       }
-      final new_data = await api_tagihan.getTagihanList(kontrakId);
-      data_tagihan[penyewa_id] = new_data;
-      _indexTagihanList(penyewa_id, data_tagihan[penyewa_id]!);
+      final newData = await api_tagihan.getTagihanList(kontrakId);
+      data_tagihan[penyewaId] = newData;
+      _indexTagihanList(penyewaId, data_tagihan[penyewaId]!);
 
-      perubahan_data[penyewa_id] = false;
+      perubahan_data[penyewaId] = false;
       print("flag tagihan false");
     } catch (e) {
       _pesan_error = e.toString();
@@ -206,11 +206,11 @@ class TagihanProvider extends ChangeNotifier {
   }
 
   Future<void> ambil_tagihan_by_kontrak_provider(
-    int kontrak_id, {
+    int kontrakId, {
     required int penyewa_id,
     bool force = false,
   }) async {
-    if (!force && data_tagihan_by_kontrak.containsKey(kontrak_id)) {
+    if (!force && data_tagihan_by_kontrak.containsKey(kontrakId)) {
       return;
     }
     try {
@@ -218,8 +218,8 @@ class TagihanProvider extends ChangeNotifier {
       loading = true;
       notifyListeners();
 
-      final new_data = await api_tagihan.getTagihanList(kontrak_id);
-      _indexTagihanKontrakList(kontrak_id, penyewa_id, new_data);
+      final newData = await api_tagihan.getTagihanList(kontrakId);
+      _indexTagihanKontrakList(kontrakId, penyewa_id, newData);
     } catch (e) {
       _pesan_error = e.toString();
     } finally {
@@ -325,24 +325,24 @@ class TagihanProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> hapus_tagihan_provider(int tagihan_id) async {
+  Future<void> hapus_tagihan_provider(int tagihanId) async {
     try {
       _pesan_sukses = null;
       _pesan_error = null;
       loading = true;
       notifyListeners();
       //ambil kos id
-      var penyewa_id = cari_penyewa_id_bytagihan(tagihan_id);
+      var penyewaId = cari_penyewa_id_bytagihan(tagihanId);
 
-      if (penyewa_id == null) {
+      if (penyewaId == null) {
         throw Exception("Data tagihan tidak ditemukan");
       }
       //aksi
-      _pesan_sukses = await api_tagihan.deleteTagihan(tagihan_id);
-      ubah_status_flag_true(penyewa_id);
-      await ambil_data_tagihan_provider(penyewa_id);
+      _pesan_sukses = await api_tagihan.deleteTagihan(tagihanId);
+      ubah_status_flag_true(penyewaId);
+      await ambil_data_tagihan_provider(penyewaId);
       AppDataInvalidator.setelahTagihanBerubah();
-      await _tandai_laporan_kos_perlu_muat_ulang(penyewa_id);
+      await _tandai_laporan_kos_perlu_muat_ulang(penyewaId);
     } catch (e) {
       _pesan_error = e.toString();
     } finally {

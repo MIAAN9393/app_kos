@@ -1,6 +1,8 @@
 const snap = require("../config/midtrans");
 const SubscriptionPayment = require("../model/subscription_payment");
 const User = require("../model/user");
+const SubscriptionService = require("./subscription_service");
+const { PLANS } = require("../config/subscription_plans");
 const { throwError } = require("../utils/error");
 
 const STATUS_MIDTRANS = [
@@ -31,23 +33,44 @@ function isPaidStatus(transactionStatus, fraudStatus) {
 }
 
 async function activateSubscription(userId, paket) {
-  // TODO: aktifkan paket langganan setelah aturan paket/subscription sudah final.
-  return { user_id: userId, paket };
+  return SubscriptionService.activateSubscription({
+    userId,
+    paket,
+  });
 }
 
-exports.createSubscriptionTransaction = async ({ user, paket, jumlah }) => {
+function getPaidPlanOrThrow(paket) {
+  const kodePaket = String(paket || "").toLowerCase();
+  const plan = PLANS[kodePaket];
+
+  if (!plan || !["starter", "pro"].includes(kodePaket)) {
+    throwError(400, "paket tidak valid", "PAKET_INVALID");
+  }
+
+  if (!Number.isFinite(Number(plan.harga)) || Number(plan.harga) <= 0) {
+    throwError(500, "harga paket belum dikonfigurasi", "SUBSCRIPTION_PRICE_MISSING");
+  }
+
+  return plan;
+}
+
+exports.createSubscriptionTransaction = async ({ user, paket }) => {
   if (!process.env.MIDTRANS_SERVER_KEY) {
     throwError(500, "MIDTRANS_SERVER_KEY belum diatur", "MIDTRANS_CONFIG_MISSING");
   }
 
+  const plan = getPaidPlanOrThrow(paket);
+  const jumlah = Number(plan.harga);
   const userId = user.id;
   const orderId = generateOrderId(userId);
   const userDetail = await User.findByPk(userId);
 
+  await SubscriptionService.assertCanPurchasePlan(userId, plan.paket);
+
   const pembayaranLangganan = await SubscriptionPayment.create({
     user_id: userId,
     order_id: orderId,
-    paket,
+    paket: plan.paket,
     jumlah,
     status: "pending",
   });
@@ -59,10 +82,10 @@ exports.createSubscriptionTransaction = async ({ user, paket, jumlah }) => {
     },
     item_details: [
       {
-        id: paket,
+        id: plan.paket,
         price: Number(jumlah),
         quantity: 1,
-        name: `Langganan ${paket}`,
+        name: `Langganan ${plan.paket}`,
       },
     ],
     customer_details: {
@@ -125,10 +148,9 @@ exports.handleMidtransNotification = async (notificationBody) => {
     ? transactionStatus
     : pembayaranLangganan.status;
 
-  const paidAt =
-    !pembayaranLangganan.paid_at && isPaidStatus(transactionStatus, fraudStatus)
-      ? new Date()
-      : pembayaranLangganan.paid_at;
+  const baruDibayar =
+    !pembayaranLangganan.paid_at && isPaidStatus(transactionStatus, fraudStatus);
+  const paidAt = baruDibayar ? new Date() : pembayaranLangganan.paid_at;
 
   await pembayaranLangganan.update({
     status,
@@ -138,8 +160,12 @@ exports.handleMidtransNotification = async (notificationBody) => {
     paid_at: paidAt,
   });
 
-  if (paidAt) {
-    await activateSubscription(pembayaranLangganan.user_id, pembayaranLangganan.paket);
+  if (baruDibayar) {
+    await SubscriptionService.activateSubscription({
+      userId: pembayaranLangganan.user_id,
+      paket: pembayaranLangganan.paket,
+      sourcePaymentId: pembayaranLangganan.id,
+    });
   }
 
   return pembayaranLangganan;

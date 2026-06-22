@@ -6,6 +6,7 @@ const Kos = require("../model/kos")
 const KamarResponse = require("../response/kamar_response")
 const { resetStatusKamar, validasiFasilitas } = require("../utils/kamar_helper")
 const Kontrak = require("../model/kontrak")
+const SubscriptionService = require("./subscription_service")
 
 exports.ambil_kamar = async (pemilik_id, kos_id)=>{
 
@@ -43,6 +44,8 @@ exports.buat_kamar = async (pemilik_id, kos_id, body) => {
     if (!nomor || !harga || !kapasitas) {
         throwError("data tidak lengkap", 400, "VALIDATION_ERROR")
     }
+
+    await SubscriptionService.assertCanCreateKamar(pemilik_id)
 
     const t = await sequelize.transaction()
 

@@ -29,8 +29,6 @@ exports.login = async (req,res,next) => {
             data: token
         }
 
-        console.log(dat)
-        
         res.status(200).json(dat)
 
     } catch (error) {
@@ -158,7 +156,7 @@ exports.refresh_token = async (req,res,next) => {
         
         res.status(200).json({
             success:true,
-            code: "LOGOUT_SUCCESS",
+            code: "REFRESH_TOKEN_SUCCESS",
             pesan:"refresh berhasil",
             data
         })

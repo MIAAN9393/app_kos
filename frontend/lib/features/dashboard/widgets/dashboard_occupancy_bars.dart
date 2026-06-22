@@ -17,19 +17,26 @@ class DashboardOccupancyBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = items.isEmpty ? DashboardDummy.okupansiPerKos : items;
+    final data = items;
     final primary = Theme.of(context).colorScheme.primary;
 
     return DashboardSectionCard(
       title: 'Okupansi per kos',
       subtitle: '$kamarTerisi dari $totalKamar kamar terisi',
       child: Column(
-        children: [
-          for (var i = 0; i < data.length; i++) ...[
-            if (i > 0) const SizedBox(height: AppDesign.spaceMd),
-            _barRow(context, data[i], primary),
-          ],
-        ],
+        children: data.isEmpty
+            ? [
+                Text(
+                  'Belum ada data okupansi per kos',
+                  style: AppDesign.bodyMuted(context),
+                ),
+              ]
+            : [
+                for (var i = 0; i < data.length; i++) ...[
+                  if (i > 0) const SizedBox(height: AppDesign.spaceMd),
+                  _barRow(context, data[i], primary),
+                ],
+              ],
       ),
     );
   }

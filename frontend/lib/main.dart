@@ -14,6 +14,7 @@ import 'package:kos_management/providers/pembayaran_provider.dart';
 import 'package:kos_management/providers/pengaturan_otomatis_provider.dart';
 import 'package:kos_management/providers/penyewa_provider.dart';
 import 'package:kos_management/providers/profile_provider.dart';
+import 'package:kos_management/providers/subscription_provider.dart';
 import 'package:kos_management/providers/tagihan_provider.dart';
 import 'package:kos_management/route_observer.dart';
 import 'package:kos_management/service/api_service.dart';
@@ -45,6 +46,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PengaturanOtomatisProvider()),
         ChangeNotifierProvider(create: (_) => PembayaranProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
       ],
       child: MyApp(hasSession: hasSession),
     ),

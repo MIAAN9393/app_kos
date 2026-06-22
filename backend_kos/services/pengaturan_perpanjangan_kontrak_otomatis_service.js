@@ -4,9 +4,11 @@ const Kontrak = require("../model/kontrak")
 const PengaturanTagihanOtomatis = require("../model/pengaturan_tagihan_otomatis")
 const PengaturanPerpanjanganKontrakOtomatis = require("../model/pengaturan_perpanjangan_kontrak_otomatis")
 const { buat_kode_kontrak } = require("../utils/kontrak_helper")
+const { buatPublicToken } = require("../utils/public_token")
 const Kamar = require("../model/kamar")
 const Kos = require("../model/kos")
 const FcmEventService = require("./fcm_event_service")
+const SubscriptionService = require("./subscription_service")
 const { throwError } = require("../utils/error")
 const {
   ambil_tanggal_timezone,
@@ -295,6 +297,7 @@ const prosesSatuPengaturan = async (pengaturan_id, hari_ini) => {
     const kontrak_baru = await Kontrak.create(
       {
         kode_kontrak,
+        public_token: buatPublicToken(),
         penyewa_id: kontrak_lama.penyewa_id,
         kamar_id: kontrak_lama.kamar_id,
         tanggal_mulai: tanggal_mulai_baru,
@@ -412,6 +415,12 @@ exports.generatePerpanjanganKontrakOtomatis = async () => {
   for (const row of list_pengaturan) {
     const pemilikId = row.kontrakAwal?.Kamar?.Kos?.pemilik_id
     try {
+      const entitlements = await SubscriptionService.getEntitlements(pemilikId)
+      if (!entitlements.features.perpanjangan_otomatis) {
+        hasil.skip += 1
+        continue
+      }
+
       const proses = await prosesSatuPengaturan(row.id, hari_ini)
       if (proses.status === "berhasil") {
         hasil.berhasil += 1

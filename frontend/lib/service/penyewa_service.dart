@@ -6,8 +6,8 @@ class PenyewaService extends ApiService {
   // =========================
   // PENYEWA
   // =========================
-  Future<dynamic> getPenyewaList(int kamar_id) async {
-    final res = await api.get("penyewa/ambil_penyewa/${kamar_id}");
+  Future<dynamic> getPenyewaList(int kamarId) async {
+    final res = await api.get("penyewa/ambil_penyewa/$kamarId");
 
     if (res['statusCode'] != 200) {
       throw Exception(res['data']['pesan'] ?? 'ambil data penyewa gagal');
@@ -21,8 +21,8 @@ class PenyewaService extends ApiService {
     return data;
   }
 
-  Future<dynamic> getPenyewaList_by_kos(int kos_id) async {
-    final res = await api.get("penyewa/list_by_kos/${kos_id}");
+  Future<dynamic> getPenyewaList_by_kos(int kosId) async {
+    final res = await api.get("penyewa/list_by_kos/$kosId");
 
     if (res['statusCode'] != 200) {
       throw Exception(
@@ -69,7 +69,7 @@ class PenyewaService extends ApiService {
   }
 
   Future<dynamic> editPenyewa(
-    int penyewa_id,
+    int penyewaId,
     String nama,
     String noTelpon,
     String email, {
@@ -77,7 +77,7 @@ class PenyewaService extends ApiService {
     String? jenisKelamin,
     String? statusHubungan,
   }) async {
-    final res = await api.put("penyewa/edit_penyewa/${penyewa_id}", {
+    final res = await api.put("penyewa/edit_penyewa/$penyewaId", {
       "nama": nama,
       "tanggal_lahir": tanggalLahir,
       "jenis_kelamin": jenisKelamin,

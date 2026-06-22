@@ -3,21 +3,19 @@ const { throwError } = require("../utils/error");
 
 exports.create_subscription = async (req, res, next) => {
   try {
-    const { paket, jumlah } = req.body;
-    const jumlahAngka = Number(jumlah);
+    const { paket } = req.body;
 
     if (!paket) {
       throwError(400, "paket wajib diisi", "PAKET_REQUIRED");
     }
 
-    if (jumlah === undefined || jumlah === null || !Number.isFinite(jumlahAngka) || jumlahAngka <= 0) {
-      throwError(400, "jumlah wajib angka lebih dari 0", "JUMLAH_INVALID");
+    if (!["starter", "pro"].includes(String(paket).toLowerCase())) {
+      throwError(400, "paket tidak valid", "PAKET_INVALID");
     }
 
     const data = await MidtransService.createSubscriptionTransaction({
       user: req.user,
-      paket,
-      jumlah: jumlahAngka,
+      paket: String(paket).toLowerCase(),
     });
 
     res.status(200).json({

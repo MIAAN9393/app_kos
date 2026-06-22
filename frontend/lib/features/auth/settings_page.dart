@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kos_management/core/theme/app_design.dart';
 import 'package:kos_management/features/notification/notification_settings_cards.dart';
+import 'package:kos_management/features/subscription/subscription_cards.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -13,6 +14,8 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppDesign.spaceMd),
         children: [
+          const SubscriptionCards(),
+          const SizedBox(height: AppDesign.spaceSm),
           const NotificationSettingsCards(),
           const SizedBox(height: AppDesign.spaceSm),
           _tile(context, Icons.language_outlined, 'Bahasa', 'Indonesia'),

@@ -183,7 +183,7 @@ class _KamarDetailPageState extends State<KamarDetailPage>
                     style: AppDesign.titleBold(context).copyWith(fontSize: 18),
                   ),
                   Text(
-                    namaKos != null ? '$namaKos' : 'Detail kamar',
+                    namaKos != null ? namaKos : 'Detail kamar',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppDesign.bodyMuted(context).copyWith(fontSize: 12),

@@ -5,9 +5,11 @@ const Tagihan = require("../model/tagihan")
 const TagihanItem = require("../model/tagihan_item")
 const PengaturanTagihanOtomatis = require("../model/pengaturan_tagihan_otomatis")
 const { buat_kode_tagihan } = require("../utils/tagihan_helper")
+const { buatPublicToken } = require("../utils/public_token")
 const Kamar = require("../model/kamar")
 const Kos = require("../model/kos")
 const FcmEventService = require("./fcm_event_service")
+const SubscriptionService = require("./subscription_service")
 const { throwError } = require("../utils/error")
 const {
   ambil_tanggal_timezone,
@@ -309,6 +311,7 @@ const prosesSatuPengaturan = async (pengaturan_id, hari_ini) => {
     const tagihan = await Tagihan.create(
       {
         kode_tagihan,
+        public_token: buatPublicToken(),
         kontrak_id: kontrak.id,
         periode_awal,
         periode_akhir,
@@ -383,6 +386,12 @@ exports.generateTagihanOtomatis = async () => {
   for (const row of list_pengaturan) {
     const pemilikId = row.Kontrak?.Kamar?.Kos?.pemilik_id
     try {
+      const entitlements = await SubscriptionService.getEntitlements(pemilikId)
+      if (!entitlements.features.tagihan_otomatis) {
+        hasil.skip += 1
+        continue
+      }
+
       const proses = await prosesSatuPengaturan(row.id, hari_ini)
       if (proses.status === "berhasil") {
         hasil.berhasil += 1

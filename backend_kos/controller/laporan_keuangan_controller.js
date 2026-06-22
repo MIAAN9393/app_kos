@@ -1,10 +1,13 @@
 const laporanService = require("../services/laporan_service")
+const SubscriptionService = require("../services/subscription_service")
 
 /**
  * GET laporan keuangan — uang masuk per bulan (tanggal_bayar).
  */
 exports.ambil_laporan_keuangan = async (req, res, next) => {
   try {
+    await SubscriptionService.assertLaporanRange(req.user.id, req.query)
+
     const data = await laporanService.ambil_laporan_keuangan(
       req.user.id,
       req.query
@@ -16,8 +19,6 @@ exports.ambil_laporan_keuangan = async (req, res, next) => {
       pesan: "laporan keuangan",
       data,
     })
-    
-    console.log("LAPORAN KEUANGAN",data)
   } catch (error) {
     next(error)
   }

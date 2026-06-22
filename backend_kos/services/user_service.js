@@ -45,6 +45,14 @@ function kontakDariBody(body) {
     return {channel, email}
 }
 
+function refreshSecret() {
+    if(!process.env.JWT_REFRESH_SECRET){
+        throwError("JWT_REFRESH_SECRET belum diatur di server",500,"JWT_REFRESH_CONFIG_ERROR")
+    }
+
+    return process.env.JWT_REFRESH_SECRET
+}
+
 const buatTokenLogin = async (user) => {
     const access_token = jwt.sign(
         {id:user.id,email:user.email,role:user.role},
@@ -53,7 +61,7 @@ const buatTokenLogin = async (user) => {
 
     const refresh_token = jwt.sign(
         {id:user.id},
-        process.env.JWT_SECRET,{expiresIn:"7d"}
+        refreshSecret(),{expiresIn:"7d"}
     )
 
     await user.update({refresh_token:refresh_token})
@@ -372,10 +380,12 @@ exports.refresh_token = async (body) => {
         throwError("refresh token tidak ada",400,"INVALID_CREDENTIAL")
     }
 
+    const secret = refreshSecret()
+
     //CEK REFRESHTOKEN
     try {
 
-        jwt.verify(refresh_token,process.env.JWT_SECRET)
+        jwt.verify(refresh_token,secret)
 
     } catch (error) {
         throwError("refresh token tidak valid silahkan login ulang",401,"INVALID_TOKEN")
@@ -390,7 +400,7 @@ exports.refresh_token = async (body) => {
 
     //BUAT TOKEN
     const access_token = jwt.sign({id:user.id,email:user.email,role:user.role},process.env.JWT_SECRET,{"expiresIn":"2d"})
-    const new_refresh_token = jwt.sign({id:user.id},process.env.JWT_SECRET,{"expiresIn":"7d"})
+    const new_refresh_token = jwt.sign({id:user.id},secret,{"expiresIn":"7d"})
 
     //UPDATE DATA USER
     await user.update({refresh_token:new_refresh_token})

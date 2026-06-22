@@ -54,9 +54,9 @@ class KosService extends ApiService {
     return _pesanFrom(res['data'], 'Kos berhasil dibuat');
   }
 
-  Future<dynamic> hapusKos(int id_kos) async {
+  Future<dynamic> hapusKos(int idKos) async {
 
-      final res = await api.sdelete('kos/shapus_kos/$id_kos');
+      final res = await api.sdelete('kos/shapus_kos/$idKos');
       if(res['statusCode']!=200){
         throw Exception(_pesanFrom(res['data'], 'Hapus kos gagal'));
       }
@@ -76,8 +76,8 @@ class KosService extends ApiService {
     return _pesanFrom(res['data'], 'Kos berhasil diubah');
   }
 
-    Future<dynamic> laporan_kos(int kos_id) async {
-    final res = await api.get('kos/laporan_kos?kos_id=$kos_id');
+    Future<dynamic> laporan_kos(int kosId) async {
+    final res = await api.get('kos/laporan_kos?kos_id=$kosId');
 
     if(res['statusCode']!=200){
       throw Exception (res['data']['pesan']??'ambil data kos gagal');

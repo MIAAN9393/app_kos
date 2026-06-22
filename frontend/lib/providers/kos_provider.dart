@@ -53,9 +53,9 @@ class KosProvider extends ChangeNotifier {
     _instance?.tandai_perlu_muat_ulang();
   }
 
-  Map<String, dynamic>? ambil_datasiap_kos_by_id(int kos_id) {
+  Map<String, dynamic>? ambil_datasiap_kos_by_id(int kosId) {
     for (var kos in data_kos) {
-      if (idEquals(kos['id'], kos_id)) return kos;
+      if (idEquals(kos['id'], kosId)) return kos;
     }
     return null;
   }
@@ -124,7 +124,7 @@ class KosProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> hapus_kos_provider(int id_kos) async {
+  Future<bool> hapus_kos_provider(int idKos) async {
     print("SATU");
     try {
       _pesan_sukses = null;
@@ -132,7 +132,7 @@ class KosProvider extends ChangeNotifier {
       loading = true;
       notifyListeners();
       //aksi
-      _pesan_sukses = await api.hapusKos(id_kos);
+      _pesan_sukses = await api.hapusKos(idKos);
       //ambil ulang data
       data_kos = await api.getKosList();
       _syncKosMaps();
@@ -179,7 +179,7 @@ class KosProvider extends ChangeNotifier {
     }
   }
 
-  List<Map<String, dynamic>> tampilkan_data(String kata_kunci) {
-    return search_data_nama(data_kos, kata_kunci);
+  List<Map<String, dynamic>> tampilkan_data(String kataKunci) {
+    return search_data_nama(data_kos, kataKunci);
   }
 }

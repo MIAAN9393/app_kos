@@ -12,6 +12,7 @@ const KontrakResponse = require("../response/kontrak_response")
 const { buat_kode_kontrak } = require("../utils/kontrak_helper")
 const { ambil_tanggal_doang } = require("../utils/waktu")
 const WhatsAppService = require("./whatsapp_service")
+const { buatPublicToken, pastikanPublicToken } = require("../utils/public_token")
 
 exports.ambil_kontrak = async (pemilik_id, penyewa_id) => {
   if (!pemilik_id) {
@@ -64,6 +65,8 @@ exports.ambil_kontrak = async (pemilik_id, penyewa_id) => {
   if (!kontrak) {
     return null
   }
+
+  await pastikanPublicToken(kontrak)
 
   return new KontrakResponse(kontrak)
 }
@@ -122,6 +125,8 @@ exports.list_by_penyewa = async (pemilik_id, penyewa_id) => {
     ],
   })
 
+  await Promise.all(list_kontrak.map((kontrak) => pastikanPublicToken(kontrak)))
+
   return KontrakResponse.list(list_kontrak)
 }
 
@@ -145,6 +150,8 @@ exports.ambil_semua_kontrak = async (pemilik_id) => {
     ],
     order: [["id", "DESC"]],
   })
+
+  await Promise.all(list_kontrak.map((kontrak) => pastikanPublicToken(kontrak)))
 
   return KontrakResponse.list(list_kontrak)
 }
@@ -247,6 +254,7 @@ exports.buat_kontrak = async (pemilik_id, body) => {
       {
         penyewa_id,
         kode_kontrak,
+        public_token: buatPublicToken(),
         kamar_id,
         tanggal_mulai,
         tanggal_selesai,

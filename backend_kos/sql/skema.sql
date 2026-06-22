@@ -69,10 +69,28 @@ CREATE TABLE kamar (
   FOREIGN KEY (kos_id) REFERENCES kos(id)
 ) ENGINE=InnoDB;
 
---4. KONTRAK
+-- 4. PENYEWA
+CREATE TABLE penyewa (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pemilik_id INT NOT NULL,
+  nama VARCHAR(100) NOT NULL,
+  tanggal_lahir DATE NULL,
+  jenis_kelamin ENUM('pria','wanita') NULL,
+  status_hubungan ENUM('jomblo','pacaran','menikah','duda','janda') NULL,
+  
+  no_telpon VARCHAR(20),
+  email VARCHAR(100),
+  status ENUM('aktif','nonaktif') DEFAULT 'aktif',
+  dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (pemilik_id) REFERENCES users(id)
+) ENGINE=InnoDB;
+
+-- 5. KONTRAK
 CREATE TABLE kontrak (
     id INT AUTO_INCREMENT PRIMARY KEY,
     kode_kontrak VARCHAR(50) UNIQUE,
+    public_token VARCHAR(100) UNIQUE NULL,
 
     penyewa_id INT NOT NULL,
     kamar_id INT NOT NULL,
@@ -98,28 +116,12 @@ CREATE TABLE kontrak (
     INDEX idx_kontrak_penyewa_status (penyewa_id, status)
 ) ENGINE=InnoDB;
 
--- 5. PENYEWA
-CREATE TABLE penyewa (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  pemilik_id INT NOT NULL,
-  nama VARCHAR(100) NOT NULL,
-  tanggal_lahir DATE NULL,
-  jenis_kelamin ENUM('pria','wanita') NULL,
-  status_hubungan ENUM('jomblo','pacaran','menikah','duda','janda') NULL,
-  
-  no_telpon VARCHAR(20),
-  email VARCHAR(100),
-  status ENUM('aktif','nonaktif') DEFAULT 'aktif',
-  dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-  FOREIGN KEY (pemilik_id) REFERENCES users(id)
-) ENGINE=InnoDB;
-
 -- 6. TAGIHAN
 CREATE TABLE tagihan (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
     kode_tagihan VARCHAR(50) UNIQUE,
+    public_token VARCHAR(100) UNIQUE NULL,
 
     kontrak_id INT NOT NULL,
 

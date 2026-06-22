@@ -9,7 +9,7 @@ class KontrakAksiRules {
 
   static DateTime? parseTanggal(dynamic v) {
     if (v == null) return null;
-    return DateTime.tryParse('${v}'.split('T').first);
+    return DateTime.tryParse('$v'.split('T').first);
   }
 
   static String status(Map<String, dynamic> kontrak) =>

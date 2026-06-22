@@ -15,6 +15,12 @@ const sequelize = require("../config/database");
         unique: true,
       },
 
+      public_token: {
+        type: DataTypes.STRING(100),
+        unique: true,
+        allowNull: true,
+      },
+
       kontrak_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
