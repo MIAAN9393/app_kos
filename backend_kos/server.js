@@ -91,6 +91,12 @@ app.use('/api/midtrans/notification',webhookLimiter)
 app.use('/api/midtrans',require("./routes/midtrans_routes"))
 app.use('/api/subscription',require("./routes/subscription_routes"))
 app.use('/public',publicLimiter,require("./routes/public_pdf_routes"))
+app.get("/",(req,res)=>{
+  res.status(200).json({
+    sukses:true,
+    pesan:"server app-kos terhubung"
+  })
+})
 
 app.use(require("./middleware/error_middleware"))
 // Test koneksi DB
