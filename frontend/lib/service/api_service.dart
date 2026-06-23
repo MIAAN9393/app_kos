@@ -88,7 +88,9 @@ class ApiService {
   // final String baseUrl = "http://10.0.2.2:3003/api";
 
   //untuk perangkat keras android
-  final String baseUrl = "http://192.168.100.6:3000/api";
+  // final String baseUrl = "http://192.168.100.6:3000/api";
+  
+  final String baseUrl = "http://10.92.27.68:3000/api";
 
   String get publicBaseUrl => baseUrl.endsWith('/api')
       ? baseUrl.substring(0, baseUrl.length - 4)
