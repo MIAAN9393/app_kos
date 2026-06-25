@@ -73,6 +73,7 @@ if (process.env.NODE_ENV !== "production") {
     })
   })
 }
+
 app.use('/api/auth',authLimiter,require("./routes/user_routes"))
 app.use('/api/kos',require("./routes/kos_routes"))
 app.use('/api/kamar',require("./routes/kamar_routes"))
@@ -99,15 +100,25 @@ app.get("/",(req,res)=>{
 })
 
 app.use(require("./middleware/error_middleware"))
-// Test koneksi DB
-sequelize.authenticate()
-  .then(() => {
+
+async function startServer() {
+  try {
+    await sequelize.authenticate();
     console.log("Database connected");
+
+    if (process.env.DB_SYNC === "true") {
+      await sequelize.sync();
+      console.log("Database synced");
+    }
+
     starCronjob();
     app.listen(process.env.PORT, () => {
       console.log(`Server running on port ${process.env.PORT}`);
     });
-  })
-  .catch(err => {
+  } catch (err) {
     console.error("Unable to connect:", err);
-  });
+    process.exit(1);
+  }
+}
+
+startServer();
