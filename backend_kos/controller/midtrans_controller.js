@@ -30,12 +30,20 @@ exports.create_subscription = async (req, res, next) => {
 
 exports.notification = async (req, res, next) => {
   try {
-    await MidtransService.handleMidtransNotification(req.body);
+    const body = req.body || {};
+    console.log("=== MIDTRANS WEBHOOK MASUK ===", {
+      order_id: body.order_id,
+      transaction_status: body.transaction_status,
+      fraud_status: body.fraud_status,
+      payment_type: body.payment_type,
+    });
+
+    const data = await MidtransService.handleMidtransNotification(body);
 
     res.status(200).json({
       success: true,
-      code: "MIDTRANS_NOTIFICATION_OK",
-      pesan: "notification diterima",
+      code: data?.ignored ? "MIDTRANS_NOTIFICATION_IGNORED" : "MIDTRANS_NOTIFICATION_OK",
+      pesan: data?.ignored ? "notification diabaikan" : "notification diterima",
     });
   } catch (error) {
     next(error);

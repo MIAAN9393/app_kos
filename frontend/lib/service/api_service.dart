@@ -90,12 +90,12 @@ class ApiService {
   //untuk perangkat keras android
   // final String baseUrl = "http://192.168.100.6:3000/api";
   
-  final String baseUrl = "http://10.92.27.68:3000/api";
+  final String baseUrl = "https://appkos-production.up.railway.app/api";
 
   String get publicBaseUrl => baseUrl.endsWith('/api')
       ? baseUrl.substring(0, baseUrl.length - 4)
       : baseUrl;
-
+  
   Future<Map<String, String>> headers() async {
     final token = await getToken("access_token");
     return {

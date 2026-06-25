@@ -8,6 +8,7 @@ require("./model/index");
 const { starCronjob } = require("./cron/index_cron");
 
 const app = express();
+app.set("trust proxy", 1);
 
 const isProduction = process.env.NODE_ENV === "production";
 const corsOrigins = (process.env.CORS_ORIGINS || "")

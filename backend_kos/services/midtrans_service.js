@@ -129,20 +129,37 @@ exports.createSubscriptionTransaction = async ({ user, paket }) => {
 };
 
 exports.handleMidtransNotification = async (notificationBody) => {
-  const statusResponse = await snap.transaction.notification(notificationBody);
-  const orderId = statusResponse.order_id;
-  const transactionStatus = statusResponse.transaction_status;
-  const fraudStatus = statusResponse.fraud_status;
+  const notificationOrderId = notificationBody?.order_id;
+
+  if (!notificationOrderId) {
+    console.warn("Midtrans notification ignored: order_id kosong");
+    return {
+      ignored: true,
+      reason: "ORDER_ID_EMPTY",
+    };
+  }
 
   const pembayaranLangganan = await SubscriptionPayment.findOne({
     where: {
-      order_id: orderId,
+      order_id: notificationOrderId,
     },
   });
 
   if (!pembayaranLangganan) {
-    throwError(404, "pembayaran langganan tidak ditemukan", "SUBSCRIPTION_PAYMENT_NOT_FOUND");
+    console.warn("Midtrans notification ignored: order_id tidak ditemukan", {
+      order_id: notificationOrderId,
+      transaction_status: notificationBody?.transaction_status,
+    });
+    return {
+      ignored: true,
+      reason: "ORDER_ID_NOT_FOUND",
+      order_id: notificationOrderId,
+    };
   }
+
+  const statusResponse = await snap.transaction.notification(notificationBody);
+  const transactionStatus = statusResponse.transaction_status;
+  const fraudStatus = statusResponse.fraud_status;
 
   const status = STATUS_MIDTRANS.includes(transactionStatus)
     ? transactionStatus
