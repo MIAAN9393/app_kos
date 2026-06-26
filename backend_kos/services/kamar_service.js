@@ -126,8 +126,6 @@ exports.edit_kamar = async (pemilik_id, kamar_id, body) => {
             where: {
                 kamar_id: kamar_id,
                 status: { [Op.in]: ["aktif", "pending"] },
-                tanggal_mulai: { [Op.lte]: tanggal_selesai },
-                tanggal_selesai: { [Op.gte]: tanggal_mulai },
             },
             transaction: t,
             lock: t.LOCK.UPDATE,
