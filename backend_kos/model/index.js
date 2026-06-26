@@ -59,6 +59,10 @@ Kamar.hasMany(Kontrak,{
 Kontrak.belongsTo(Kamar,{
     foreignKey:"kamar_id"
 })
+Kontrak.belongsTo(Kamar,{
+    foreignKey:"kamar_id",
+    as:"kamar"
+})
 
 Kontrak.hasMany(Tagihan,{
     foreignKey:"kontrak_id"

@@ -10,78 +10,86 @@ const { Op } = require("sequelize")
 const SubscriptionService = require("./subscription_service")
 
 exports.ambil_kos = async (pemilik_id)=>{
-   
-    //VALIDASI
-    if(!pemilik_id){
-        throwError("pemilik tidak ditemukan",401,"UNAUTHORIZED")
-    }
-
-    //AMBIL DATA KOS
-    const list_kos = await Kos.findAll({where:{pemilik_id:pemilik_id,status:"aktif"}})
-
-    if (list_kos.length === 0) {
-        return KosResponse.list([])
-    }
-
-    const kos_ids = list_kos.map((k) => k.id)
-
-    const kamar_rows = await Kamar.findAll({
-        attributes: [
-            "kos_id",
-            [sequelize.fn("COUNT", sequelize.col("id")), "jumlah_kamar"],
-        ],
-        where: {
-            kos_id: { [Op.in]: kos_ids },
-            status: "aktif",
-        },
-        group: ["kos_id"],
-        raw: true,
-    })
-
-    const kontrak_rows = await Kontrak.findAll({
-        attributes: [
-            [sequelize.col("Kamar.kos_id"), "kos_id"],
-            [
-                sequelize.fn(
-                    "COUNT",
-                    sequelize.fn("DISTINCT", sequelize.col("Kontrak.penyewa_id"))
-                ),
-                "jumlah_penyewa",
-            ],
-        ],
-        include: [
-            {
-                model: Kamar,
-                attributes: [],
-                where: {
-                    kos_id: { [Op.in]: kos_ids },
-                    status: "aktif",
-                },
-                required: true,
-            },
-        ],
-        where: { status: "aktif" },
-        group: [sequelize.col("Kamar.kos_id")],
-        raw: true,
-    })
-
-    const kamar_map = Object.fromEntries(
-        kamar_rows.map((r) => [r.kos_id, Number(r.jumlah_kamar) || 0])
-    )
-    const penyewa_map = Object.fromEntries(
-        kontrak_rows.map((r) => [r.kos_id, Number(r.jumlah_penyewa) || 0])
-    )
-
-    const enriched = list_kos.map((kos) => {
-        const plain = kos.get ? kos.get({ plain: true }) : kos
-        return {
-            ...plain,
-            jumlah_kamar: kamar_map[kos.id] ?? 0,
-            jumlah_penyewa: penyewa_map[kos.id] ?? 0,
+    try {
+        //VALIDASI
+        if(!pemilik_id){
+            throwError("pemilik tidak ditemukan",401,"UNAUTHORIZED")
         }
-    })
 
-    return KosResponse.list(enriched)
+        //AMBIL DATA KOS
+        const list_kos = await Kos.findAll({where:{pemilik_id:pemilik_id,status:"aktif"}})
+
+        if (list_kos.length === 0) {
+            return KosResponse.list([])
+        }
+
+        const kos_ids = list_kos.map((k) => k.id)
+
+        const kamar_rows = await Kamar.findAll({
+            attributes: [
+                "kos_id",
+                [sequelize.fn("COUNT", sequelize.col("id")), "jumlah_kamar"],
+            ],
+            where: {
+                kos_id: { [Op.in]: kos_ids },
+                status: "aktif",
+            },
+            group: ["kos_id"],
+            raw: true,
+        })
+
+        const kontrak_rows = await Kontrak.findAll({
+            attributes: [
+                [sequelize.col("kamar.kos_id"), "kos_id"],
+                [
+                    sequelize.fn(
+                        "COUNT",
+                        sequelize.fn("DISTINCT", sequelize.col("Kontrak.penyewa_id"))
+                    ),
+                    "jumlah_penyewa",
+                ],
+            ],
+            include: [
+                {
+                    model: Kamar,
+                    as: "kamar",
+                    attributes: [],
+                    where: {
+                        kos_id: { [Op.in]: kos_ids },
+                        status: "aktif",
+                    },
+                    required: true,
+                },
+            ],
+            where: { status: "aktif" },
+            group: [sequelize.col("kamar.kos_id")],
+            raw: true,
+        })
+
+        const kamar_map = Object.fromEntries(
+            kamar_rows.map((r) => [r.kos_id, Number(r.jumlah_kamar) || 0])
+        )
+        const penyewa_map = Object.fromEntries(
+            kontrak_rows.map((r) => [r.kos_id, Number(r.jumlah_penyewa) || 0])
+        )
+
+        const enriched = list_kos.map((kos) => {
+            const plain = kos.get ? kos.get({ plain: true }) : kos
+            return {
+                ...plain,
+                jumlah_kamar: kamar_map[kos.id] ?? 0,
+                jumlah_penyewa: penyewa_map[kos.id] ?? 0,
+            }
+        })
+
+        return KosResponse.list(enriched)
+    } catch (err) {
+        console.error("KOS ERROR MESSAGE:", err.message)
+        console.error("KOS ERROR NAME:", err.name)
+        console.error("KOS SQL MESSAGE:", err.parent?.sqlMessage)
+        console.error("KOS SQL:", err.parent?.sql)
+        throw err
+    }
 }
 
 exports.buat_kos = async (pemilik_id,body)=>{
