@@ -11,13 +11,37 @@ class SubscriptionCards extends StatefulWidget {
   State<SubscriptionCards> createState() => _SubscriptionCardsState();
 }
 
-class _SubscriptionCardsState extends State<SubscriptionCards> {
+class _SubscriptionCardsState extends State<SubscriptionCards>
+    with WidgetsBindingObserver {
+  bool _menungguPembayaran = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubscriptionProvider>().ambilSubscription();
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _menungguPembayaran) {
+      _refreshSubscriptionSetelahPembayaran();
+    }
+  }
+
+  Future<void> _refreshSubscriptionSetelahPembayaran() async {
+    _menungguPembayaran = false;
+    await Future<void>.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+    await context.read<SubscriptionProvider>().ambilSubscription(force: true);
   }
 
   Future<void> _upgrade(BuildContext context, String paket) async {
@@ -47,7 +71,10 @@ class _SubscriptionCardsState extends State<SubscriptionCards> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Gagal membuka halaman pembayaran')),
       );
+      return;
     }
+
+    _menungguPembayaran = true;
   }
 
   @override
