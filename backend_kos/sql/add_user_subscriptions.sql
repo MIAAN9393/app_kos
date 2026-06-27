@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   INDEX idx_user_subscriptions_user_status (user_id, status),
   INDEX idx_user_subscriptions_expired_at (expired_at),
   INDEX idx_user_subscriptions_grace_until (grace_until),
+  INDEX idx_user_subscriptions_source_payment (source_payment_id),
   CONSTRAINT fk_user_subscriptions_user
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON UPDATE CASCADE
