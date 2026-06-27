@@ -155,6 +155,10 @@ class _SubscriptionCardsState extends State<SubscriptionCards>
             children: [
               const Divider(height: 1, color: AppDesign.border),
               const SizedBox(height: AppDesign.spaceMd),
+              if (provider.warningPesan != null) ...[
+                _subscriptionWarning(context, provider.warningPesan!),
+                const SizedBox(height: AppDesign.spaceMd),
+              ],
               _limitRow(
                 context,
                 label: 'Kos',
@@ -212,6 +216,29 @@ class _SubscriptionCardsState extends State<SubscriptionCards>
           ),
         );
       },
+    );
+  }
+
+  Widget _subscriptionWarning(BuildContext context, String message) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppDesign.spaceSm),
+      decoration: BoxDecoration(
+        color: AppDesign.warning.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        border: Border.all(color: AppDesign.warning.withValues(alpha: 0.28)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            Icons.warning_amber_outlined,
+            color: AppDesign.warning,
+            size: 18,
+          ),
+          const SizedBox(width: AppDesign.spaceSm),
+          Expanded(child: Text(message, style: AppDesign.bodyMuted(context))),
+        ],
+      ),
     );
   }
 
@@ -308,7 +335,9 @@ class _SubscriptionCardsState extends State<SubscriptionCards>
       _ => 0,
     };
     final active = provider.paketAktif == paket;
-    final canUpgrade = targetRank > provider.paketRank;
+    final canUpgrade = provider.dalamMasaTenggang
+        ? targetRank >= provider.paketRank
+        : targetRank > provider.paketRank;
     return FilledButton(
       onPressed: provider.upgrading || !canUpgrade
           ? null
@@ -318,7 +347,13 @@ class _SubscriptionCardsState extends State<SubscriptionCards>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(active ? '$label aktif' : 'Upgrade $label'),
+            Text(
+              active && provider.dalamMasaTenggang
+                  ? 'Perpanjang $label'
+                  : active
+                  ? '$label aktif'
+                  : 'Upgrade $label',
+            ),
             if (!active && canUpgrade)
               Text(
                 price,

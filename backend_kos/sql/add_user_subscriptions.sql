@@ -2,14 +2,16 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   paket ENUM('free', 'starter', 'pro') NOT NULL DEFAULT 'free',
-  status ENUM('active', 'expired', 'cancelled') NOT NULL DEFAULT 'active',
+  status ENUM('active', 'past_due', 'expired', 'cancelled') NOT NULL DEFAULT 'active',
   source_payment_id INT NULL,
   started_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   expired_at DATETIME NULL,
+  grace_until DATETIME NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_user_subscriptions_user_status (user_id, status),
   INDEX idx_user_subscriptions_expired_at (expired_at),
+  INDEX idx_user_subscriptions_grace_until (grace_until),
   CONSTRAINT fk_user_subscriptions_user
     FOREIGN KEY (user_id) REFERENCES users(id)
     ON UPDATE CASCADE

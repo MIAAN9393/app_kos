@@ -11,6 +11,9 @@ exports.ambil_subscription_saya = async (req, res, next) => {
       pesan: "subscription aktif",
       data: {
         paket: entitlements.paket,
+        status: entitlements.status,
+        warning: entitlements.warning,
+        is_grace: entitlements.is_grace,
         limits: entitlements.limits,
         usage,
         features: entitlements.features,

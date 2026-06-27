@@ -4,6 +4,7 @@ const { startTagihanOtomatisCron } = require("./tagihan_otomatis_cron")
 const {
   startPerpanjanganKontrakOtomatisCron,
 } = require("./perpanjangan_kontrak_otomatis_cron")
+const { startSubscriptionCron } = require("./subscription_cron")
 
 let jobs = null
 
@@ -18,6 +19,7 @@ exports.starCronjob = () => {
     startTagihanCron(),
     startTagihanOtomatisCron(),
     startPerpanjanganKontrakOtomatisCron(),
+    startSubscriptionCron(),
   ]
 
   return jobs

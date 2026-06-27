@@ -24,6 +24,20 @@ class SubscriptionProvider extends ChangeNotifier {
 
   String get paketAktif => '${data?['paket'] ?? 'free'}'.toLowerCase();
 
+  String get statusAktif => '${data?['status'] ?? 'free'}'.toLowerCase();
+
+  bool get dalamMasaTenggang =>
+      data?['is_grace'] == true || statusAktif == 'past_due';
+
+  String? get warningPesan {
+    final raw = data?['warning'];
+    if (raw is Map && raw['pesan'] != null) {
+      final msg = rapikanPesan('${raw['pesan']}');
+      return msg.isEmpty ? null : msg;
+    }
+    return null;
+  }
+
   Map<String, dynamic> get limits {
     final raw = data?['limits'];
     if (raw is Map<String, dynamic>) return raw;
@@ -82,9 +96,7 @@ class SubscriptionProvider extends ChangeNotifier {
       _pesanError = null;
       upgrading = true;
       notifyListeners();
-      final transaksi = await api.buatTransaksiSubscription(
-        paket: paket,
-      );
+      final transaksi = await api.buatTransaksiSubscription(paket: paket);
       return (redirectUrl: '${transaksi['redirect_url'] ?? ''}', error: null);
     } catch (e) {
       _pesanError = e.toString();

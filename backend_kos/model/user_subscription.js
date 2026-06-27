@@ -22,7 +22,7 @@ const UserSubscription = sequelize.define(
     },
 
     status: {
-      type: DataTypes.ENUM("active", "expired", "cancelled"),
+      type: DataTypes.ENUM("active", "past_due", "expired", "cancelled"),
       allowNull: false,
       defaultValue: "active",
     },
@@ -39,6 +39,11 @@ const UserSubscription = sequelize.define(
     },
 
     expired_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+
+    grace_until: {
       type: DataTypes.DATE,
       allowNull: true,
     },
@@ -66,6 +71,10 @@ const UserSubscription = sequelize.define(
       {
         name: "idx_user_subscriptions_expired_at",
         fields: ["expired_at"],
+      },
+      {
+        name: "idx_user_subscriptions_grace_until",
+        fields: ["grace_until"],
       },
     ],
   }
