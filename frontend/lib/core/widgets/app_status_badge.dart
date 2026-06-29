@@ -71,6 +71,7 @@ class AppStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _color();
     return Container(
+      constraints: const BoxConstraints(maxWidth: 112),
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.15),
@@ -78,6 +79,8 @@ class AppStatusBadge extends StatelessWidget {
       ),
       child: Text(
         _label(),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: color,
           fontWeight: FontWeight.bold,

@@ -26,12 +26,19 @@ class AppPrimaryButton extends StatelessWidget {
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (icon != null) ...[
                 Icon(icon, size: 20),
                 const SizedBox(width: 8),
               ],
-              Text(label),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           );
 
@@ -41,9 +48,6 @@ class AppPrimaryButton extends StatelessWidget {
         child: child,
       );
     }
-    return ElevatedButton(
-      onPressed: loading ? null : onPressed,
-      child: child,
-    );
+    return ElevatedButton(onPressed: loading ? null : onPressed, child: child);
   }
 }

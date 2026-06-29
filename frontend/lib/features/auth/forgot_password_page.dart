@@ -92,27 +92,30 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 style: AppDesign.bodyMuted(context),
               ),
               const SizedBox(height: AppDesign.spaceLg),
-              SegmentedButton<String>(
-                segments: const [
-                  ButtonSegment(
-                    value: 'email',
-                    label: Text('Email'),
-                    icon: Icon(Icons.email_outlined),
-                  ),
-                  ButtonSegment(
-                    value: 'phone',
-                    label: Text('Nomor HP'),
-                    icon: Icon(Icons.phone_android_rounded),
-                  ),
-                ],
-                selected: {_channel},
-                onSelectionChanged: _loadingSend || _loadingReset
-                    ? null
-                    : (value) => setState(() {
-                        _channel = value.first;
-                        _kontak.clear();
-                        _codeSent = false;
-                      }),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SegmentedButton<String>(
+                  segments: const [
+                    ButtonSegment(
+                      value: 'email',
+                      label: Text('Email'),
+                      icon: Icon(Icons.email_outlined),
+                    ),
+                    ButtonSegment(
+                      value: 'phone',
+                      label: Text('Nomor HP'),
+                      icon: Icon(Icons.phone_android_rounded),
+                    ),
+                  ],
+                  selected: {_channel},
+                  onSelectionChanged: _loadingSend || _loadingReset
+                      ? null
+                      : (value) => setState(() {
+                          _channel = value.first;
+                          _kontak.clear();
+                          _codeSent = false;
+                        }),
+                ),
               ),
               const SizedBox(height: AppDesign.spaceMd),
               AppTextField(

@@ -351,35 +351,45 @@ class _PenyewaDetailPageState extends State<PenyewaDetailPage>
           _buildHero(context, penyewa, status),
           Padding(
             padding: const EdgeInsets.all(24),
-            child: Row(
-              children: [
-                Expanded(
-                  child: AppStatCardCompact(
-                    label: 'Tagihan',
-                    value: AppDesign.formatRupiah(totalTagihan),
-                    icon: Icons.receipt_long_outlined,
-                    iconColor: AppColors.icon_uang,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: AppStatCardCompact(
-                    label: 'Dibayar',
-                    value: AppDesign.formatRupiah(totalBayar),
-                    icon: Icons.payments_outlined,
-                    iconColor: AppDesign.success,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: AppStatCardCompact(
-                    label: 'Sisa',
-                    value: AppDesign.formatRupiah(totalSisa),
-                    icon: Icons.account_balance_wallet_outlined,
-                    iconColor: AppColors.icon_penyewa,
-                  ),
-                ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final columns = constraints.maxWidth < 360 ? 1 : 3;
+                final spacing = AppDesign.spaceSm * (columns - 1);
+                final width = (constraints.maxWidth - spacing) / columns;
+                return Wrap(
+                  spacing: AppDesign.spaceSm,
+                  runSpacing: AppDesign.spaceSm,
+                  children: [
+                    SizedBox(
+                      width: width,
+                      child: AppStatCardCompact(
+                        label: 'Tagihan',
+                        value: AppDesign.formatRupiah(totalTagihan),
+                        icon: Icons.receipt_long_outlined,
+                        iconColor: AppColors.icon_uang,
+                      ),
+                    ),
+                    SizedBox(
+                      width: width,
+                      child: AppStatCardCompact(
+                        label: 'Dibayar',
+                        value: AppDesign.formatRupiah(totalBayar),
+                        icon: Icons.payments_outlined,
+                        iconColor: AppDesign.success,
+                      ),
+                    ),
+                    SizedBox(
+                      width: width,
+                      child: AppStatCardCompact(
+                        label: 'Sisa',
+                        value: AppDesign.formatRupiah(totalSisa),
+                        icon: Icons.account_balance_wallet_outlined,
+                        iconColor: AppColors.icon_penyewa,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
           Padding(
@@ -395,76 +405,80 @@ class _PenyewaDetailPageState extends State<PenyewaDetailPage>
                     style: AppDesign.titleBold(context),
                   ),
                   const SizedBox(height: 16),
-                  GridView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: 2.4,
-                        ),
-                    children: [
-                      AppInfoRow(
-                        icon: Icons.person_outline,
-                        label: 'Nama',
-                        value: '${penyewa['nama'] ?? '-'}',
-                      ),
-                      AppInfoRow(
-                        icon: Icons.phone_outlined,
-                        label: 'Telepon',
-                        value: '${penyewa['no_telpon'] ?? '-'}',
-                      ),
-                      if (tanggalLahir.isNotEmpty)
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final columns = constraints.maxWidth < 360 ? 1 : 2;
+                      final spacing = 16.0 * (columns - 1);
+                      final width = (constraints.maxWidth - spacing) / columns;
+                      final items = <Widget>[
                         AppInfoRow(
-                          icon: Icons.cake_outlined,
-                          label: 'Tanggal lahir',
-                          value: tanggalLahir,
+                          icon: Icons.person_outline,
+                          label: 'Nama',
+                          value: '${penyewa['nama'] ?? '-'}',
                         ),
-                      if (jenisKelamin.isNotEmpty)
                         AppInfoRow(
-                          icon: Icons.wc_outlined,
-                          label: 'Jenis kelamin',
-                          value: jenisKelamin,
+                          icon: Icons.phone_outlined,
+                          label: 'Telepon',
+                          value: '${penyewa['no_telpon'] ?? '-'}',
                         ),
-                      if (statusHubungan.isNotEmpty)
+                        if (tanggalLahir.isNotEmpty)
+                          AppInfoRow(
+                            icon: Icons.cake_outlined,
+                            label: 'Tanggal lahir',
+                            value: tanggalLahir,
+                          ),
+                        if (jenisKelamin.isNotEmpty)
+                          AppInfoRow(
+                            icon: Icons.wc_outlined,
+                            label: 'Jenis kelamin',
+                            value: jenisKelamin,
+                          ),
+                        if (statusHubungan.isNotEmpty)
+                          AppInfoRow(
+                            icon: Icons.favorite_border,
+                            label: 'Status hubungan',
+                            value: statusHubungan,
+                          ),
+                        if (penyewa['email'] != null &&
+                            '${penyewa['email']}'.isNotEmpty)
+                          AppInfoRow(
+                            icon: Icons.mail_outline,
+                            label: 'Email',
+                            value: '${penyewa['email']}',
+                          ),
+                        if (kamar != null)
+                          AppInfoRow(
+                            icon: Icons.meeting_room_outlined,
+                            label: 'Kamar',
+                            value: '${kamar['nomor']}',
+                          ),
+                        if (kos != null)
+                          AppInfoRow(
+                            icon: Icons.home_work_outlined,
+                            label: 'Kos',
+                            value: '${kos['nama_kos']}',
+                          ),
                         AppInfoRow(
-                          icon: Icons.favorite_border,
-                          label: 'Status hubungan',
-                          value: statusHubungan,
+                          icon: Icons.circle_outlined,
+                          label: 'Status',
+                          value: status,
                         ),
-                      if (penyewa['email'] != null &&
-                          '${penyewa['email']}'.isNotEmpty)
-                        AppInfoRow(
-                          icon: Icons.mail_outline,
-                          label: 'Email',
-                          value: '${penyewa['email']}',
-                        ),
-                      if (kamar != null)
-                        AppInfoRow(
-                          icon: Icons.meeting_room_outlined,
-                          label: 'Kamar',
-                          value: '${kamar['nomor']}',
-                        ),
-                      if (kos != null)
-                        AppInfoRow(
-                          icon: Icons.home_work_outlined,
-                          label: 'Kos',
-                          value: '${kos['nama_kos']}',
-                        ),
-                      AppInfoRow(
-                        icon: Icons.circle_outlined,
-                        label: 'Status',
-                        value: status,
-                      ),
-                      if (sisaKontrak != null)
-                        AppInfoRow(
-                          icon: Icons.timer_outlined,
-                          label: 'Durasi kontrak',
-                          value: sisaKontrak,
-                        ),
-                    ],
+                        if (sisaKontrak != null)
+                          AppInfoRow(
+                            icon: Icons.timer_outlined,
+                            label: 'Durasi kontrak',
+                            value: sisaKontrak,
+                          ),
+                      ];
+                      return Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
+                        children: [
+                          for (final item in items)
+                            SizedBox(width: width, child: item),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                   Wrap(
@@ -488,24 +502,44 @@ class _PenyewaDetailPageState extends State<PenyewaDetailPage>
                     ],
                   ),
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => _tabController.animateTo(1),
-                          icon: const Icon(Icons.description_outlined),
-                          label: const Text('Lihat Kontrak'),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => _tabController.animateTo(2),
-                          icon: const Icon(Icons.receipt_long_rounded),
-                          label: const Text('Lihat Tagihan'),
-                        ),
-                      ),
-                    ],
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final stacked = constraints.maxWidth < 320;
+                      return Wrap(
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: [
+                          SizedBox(
+                            width: stacked
+                                ? constraints.maxWidth
+                                : (constraints.maxWidth - 12) / 2,
+                            child: OutlinedButton.icon(
+                              onPressed: () => _tabController.animateTo(1),
+                              icon: const Icon(Icons.description_outlined),
+                              label: const Text(
+                                'Lihat Kontrak',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: stacked
+                                ? constraints.maxWidth
+                                : (constraints.maxWidth - 12) / 2,
+                            child: OutlinedButton.icon(
+                              onPressed: () => _tabController.animateTo(2),
+                              icon: const Icon(Icons.receipt_long_rounded),
+                              label: const Text(
+                                'Lihat Tagihan',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
@@ -624,6 +658,8 @@ class _PenyewaDetailPageState extends State<PenyewaDetailPage>
                           borderRadius: BorderRadius.circular(8),
                           child: Text(
                             '${penyewa['nama'] ?? ''}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
@@ -642,11 +678,15 @@ class _PenyewaDetailPageState extends State<PenyewaDetailPage>
                               size: 16,
                             ),
                             const SizedBox(width: 4),
-                            Text(
-                              '${penyewa['no_telpon'] ?? ''}',
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 13,
+                            Expanded(
+                              child: Text(
+                                '${penyewa['no_telpon'] ?? ''}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 13,
+                                ),
                               ),
                             ),
                           ],

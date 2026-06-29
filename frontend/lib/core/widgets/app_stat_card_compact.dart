@@ -42,6 +42,8 @@ class AppStatCardCompact extends StatelessWidget {
           Text(
             label,
             style: AppDesign.bodyMuted(context).copyWith(fontSize: 12),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

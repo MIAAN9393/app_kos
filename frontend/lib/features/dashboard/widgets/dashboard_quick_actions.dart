@@ -9,37 +9,49 @@ class DashboardQuickActions extends StatelessWidget {
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
 
-    return Wrap(
-      spacing: AppDesign.spaceSm,
-      runSpacing: AppDesign.spaceSm,
-      children: [
-        _action(
-          context,
-          label: 'Tambah penyewa',
-          icon: Icons.person_add_alt_1_rounded,
-          color: primary,
-          onTap: () => AppNavigation.toTambahPenyewaKontrak(context),
-        ),
-        _action(
-          context,
-          label: 'Kelola data',
-          icon: Icons.tune_rounded,
-          color: AppDesign.info,
-          onTap: () => AppNavigation.toControllTab(context),
-        ),
-        _action(
-          context,
-          label: 'Keuangan',
-          icon: Icons.account_balance_wallet_rounded,
-          color: AppDesign.success,
-          onTap: () => AppNavigation.toKeuanganTab(context),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final columns = constraints.maxWidth < 360 ? 2 : 3;
+        final itemWidth =
+            (constraints.maxWidth - AppDesign.spaceSm * (columns - 1)) /
+            columns;
+        return Wrap(
+          spacing: AppDesign.spaceSm,
+          runSpacing: AppDesign.spaceSm,
+          children: [
+            _action(
+              context,
+              width: itemWidth,
+              label: 'Tambah penyewa',
+              icon: Icons.person_add_alt_1_rounded,
+              color: primary,
+              onTap: () => AppNavigation.toTambahPenyewaKontrak(context),
+            ),
+            _action(
+              context,
+              width: itemWidth,
+              label: 'Kelola data',
+              icon: Icons.tune_rounded,
+              color: AppDesign.info,
+              onTap: () => AppNavigation.toControllTab(context),
+            ),
+            _action(
+              context,
+              width: itemWidth,
+              label: 'Keuangan',
+              icon: Icons.account_balance_wallet_rounded,
+              color: AppDesign.success,
+              onTap: () => AppNavigation.toKeuanganTab(context),
+            ),
+          ],
+        );
+      },
     );
   }
 
   Widget _action(
     BuildContext context, {
+    required double width,
     required String label,
     required IconData icon,
     required Color color,
@@ -52,11 +64,7 @@ class DashboardQuickActions extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppDesign.radiusMd),
         child: Container(
-          width:
-              (MediaQuery.sizeOf(context).width -
-                  AppDesign.spaceMd * 2 -
-                  AppDesign.spaceSm * 2) /
-              3,
+          width: width,
           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
           decoration: AppDesign.cardDecoration(),
           child: Column(
@@ -72,6 +80,7 @@ class DashboardQuickActions extends StatelessWidget {
                   color: AppDesign.textPrimary,
                 ),
                 maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

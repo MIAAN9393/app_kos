@@ -103,26 +103,29 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Text('Masuk', style: AppDesign.titleBold(context)),
                         const SizedBox(height: AppDesign.spaceLg),
-                        SegmentedButton<String>(
-                          segments: const [
-                            ButtonSegment(
-                              value: 'email',
-                              label: Text('Email'),
-                              icon: Icon(Icons.email_outlined),
-                            ),
-                            ButtonSegment(
-                              value: 'phone',
-                              label: Text('Nomor HP'),
-                              icon: Icon(Icons.phone_android_rounded),
-                            ),
-                          ],
-                          selected: {_channel},
-                          onSelectionChanged: (_loading || _googleLoading)
-                              ? null
-                              : (value) => setState(() {
-                                  _channel = value.first;
-                                  _identifier.clear();
-                                }),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: SegmentedButton<String>(
+                            segments: const [
+                              ButtonSegment(
+                                value: 'email',
+                                label: Text('Email'),
+                                icon: Icon(Icons.email_outlined),
+                              ),
+                              ButtonSegment(
+                                value: 'phone',
+                                label: Text('Nomor HP'),
+                                icon: Icon(Icons.phone_android_rounded),
+                              ),
+                            ],
+                            selected: {_channel},
+                            onSelectionChanged: (_loading || _googleLoading)
+                                ? null
+                                : (value) => setState(() {
+                                    _channel = value.first;
+                                    _identifier.clear();
+                                  }),
+                          ),
                         ),
                         const SizedBox(height: AppDesign.spaceMd),
                         AppTextField(
@@ -146,7 +149,10 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _password,
                           obscure: true,
                         ),
-                        Row(
+                        Wrap(
+                          alignment: WrapAlignment.spaceBetween,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: AppDesign.spaceSm,
                           children: [
                             TextButton(
                               onPressed: () => Navigator.pushNamed(
@@ -159,7 +165,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: const Text('Verifikasi akun'),
                             ),
-                            const Spacer(),
                             TextButton(
                               onPressed: () => Navigator.pushNamed(
                                 context,

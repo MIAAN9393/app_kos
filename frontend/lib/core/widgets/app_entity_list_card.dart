@@ -79,105 +79,109 @@ class AppEntityListCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
-          child: SizedBox(
-            height: AppEntityListCardMetrics.height,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  width: AppEntityListCardMetrics.accentWidth,
-                  child: _AccentPanel(
-                    accentColor: accentColor,
-                    icon: placeholderIcon,
-                    entityLabel: entityLabel,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                title,
-                                style: AppDesign.titleBold(
-                                  context,
-                                ).copyWith(fontSize: 13.5, height: 1.2),
-                                maxLines: titleMaxLines,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            AppStatusBadge(status: status),
-                          ],
-                        ),
-                        const SizedBox(height: 3),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (highlightText != null)
-                                Text(
-                                  highlightText!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: accentColor,
-                                    height: 1.05,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              if (highlightText != null &&
-                                  _visibleLines.isNotEmpty)
-                                const SizedBox(height: 2),
-                              ..._visibleLines.map(_lineRow),
-                            ],
-                          ),
-                        ),
-                        if (_hasActions)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              if (onMessage != null) ...[
-                                _ActionBtn(
-                                  icon: messageIcon,
-                                  activeColor: accentColor,
-                                  enabled: true,
-                                  onTap: onMessage!,
-                                ),
-                                const SizedBox(width: 5),
-                              ],
-                              if (onEdit != null) ...[
-                                _ActionBtn(
-                                  icon: Icons.edit_rounded,
-                                  activeColor: AppDesign.info,
-                                  enabled: canEdit,
-                                  blockedMessage: editBlockedMessage,
-                                  onTap: onEdit!,
-                                ),
-                                const SizedBox(width: 5),
-                              ],
-                              if (onDelete != null)
-                                _ActionBtn(
-                                  icon: Icons.delete_rounded,
-                                  activeColor: AppDesign.danger,
-                                  enabled: canDelete,
-                                  blockedMessage: deleteBlockedMessage,
-                                  onTap: onDelete!,
-                                ),
-                            ],
-                          ),
-                      ],
+          child: IntrinsicHeight(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: AppEntityListCardMetrics.height,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: AppEntityListCardMetrics.accentWidth,
+                    child: _AccentPanel(
+                      accentColor: accentColor,
+                      icon: placeholderIcon,
+                      entityLabel: entityLabel,
                     ),
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 8, 10, 6),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  title,
+                                  style: AppDesign.titleBold(
+                                    context,
+                                  ).copyWith(fontSize: 13.5, height: 1.2),
+                                  maxLines: titleMaxLines,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              AppStatusBadge(status: status),
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (highlightText != null)
+                                  Text(
+                                    highlightText!,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w800,
+                                      color: accentColor,
+                                      height: 1.05,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                if (highlightText != null &&
+                                    _visibleLines.isNotEmpty)
+                                  const SizedBox(height: 2),
+                                ..._visibleLines.map(_lineRow),
+                              ],
+                            ),
+                          ),
+                          if (_hasActions)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (onMessage != null) ...[
+                                  _ActionBtn(
+                                    icon: messageIcon,
+                                    activeColor: accentColor,
+                                    enabled: true,
+                                    onTap: onMessage!,
+                                  ),
+                                  const SizedBox(width: 5),
+                                ],
+                                if (onEdit != null) ...[
+                                  _ActionBtn(
+                                    icon: Icons.edit_rounded,
+                                    activeColor: AppDesign.info,
+                                    enabled: canEdit,
+                                    blockedMessage: editBlockedMessage,
+                                    onTap: onEdit!,
+                                  ),
+                                  const SizedBox(width: 5),
+                                ],
+                                if (onDelete != null)
+                                  _ActionBtn(
+                                    icon: Icons.delete_rounded,
+                                    activeColor: AppDesign.danger,
+                                    enabled: canDelete,
+                                    blockedMessage: deleteBlockedMessage,
+                                    onTap: onDelete!,
+                                  ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

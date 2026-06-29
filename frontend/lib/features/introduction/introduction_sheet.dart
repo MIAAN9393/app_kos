@@ -189,38 +189,47 @@ class _IntroPage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final compact = constraints.maxHeight < 380;
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: compact ? 88 : 112,
-              height: compact ? 88 : 112,
-              decoration: BoxDecoration(
-                color: item.color.withValues(alpha: 0.12),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                item.icon,
-                size: compact ? 42 : 54,
-                color: item.color,
-              ),
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: compact ? 88 : 112,
+                  height: compact ? 88 : 112,
+                  decoration: BoxDecoration(
+                    color: item.color.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    item.icon,
+                    size: compact ? 42 : 54,
+                    color: item.color,
+                  ),
+                ),
+                SizedBox(
+                  height: compact ? AppDesign.spaceMd : AppDesign.spaceLg,
+                ),
+                Text(
+                  item.title,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppDesign.sectionTitle(context),
+                ),
+                const SizedBox(height: AppDesign.spaceSm),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: Text(
+                    item.body,
+                    textAlign: TextAlign.center,
+                    style: AppDesign.bodyMuted(context),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: compact ? AppDesign.spaceMd : AppDesign.spaceLg),
-            Text(
-              item.title,
-              textAlign: TextAlign.center,
-              style: AppDesign.sectionTitle(context),
-            ),
-            const SizedBox(height: AppDesign.spaceSm),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 360),
-              child: Text(
-                item.body,
-                textAlign: TextAlign.center,
-                style: AppDesign.bodyMuted(context),
-              ),
-            ),
-          ],
+          ),
         );
       },
     );

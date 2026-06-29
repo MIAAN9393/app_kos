@@ -46,12 +46,18 @@ class TagihanItemsList extends StatelessWidget {
                   children: [
                     Text(
                       '${item['nama_item']}',
-                      style: AppDesign.titleBold(context).copyWith(fontSize: 14),
+                      style: AppDesign.titleBold(
+                        context,
+                      ).copyWith(fontSize: 14),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       TagihanItemUtils.labelTipe(tipe),
-                      style: AppDesign.bodyMuted(context).copyWith(fontSize: 12),
+                      style: AppDesign.bodyMuted(
+                        context,
+                      ).copyWith(fontSize: 12),
                     ),
                     if (deskripsi.isNotEmpty) ...[
                       const SizedBox(height: 4),
@@ -60,11 +66,16 @@ class TagihanItemsList extends StatelessWidget {
                   ],
                 ),
               ),
-              Text(
-                '${isDiskon ? '−' : '+'} ${AppDesign.formatRupiah(nominal)}',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: isDiskon ? AppDesign.danger : Colors.green[800],
+              Flexible(
+                child: Text(
+                  '${isDiskon ? '-' : '+'} ${AppDesign.formatRupiah(nominal)}',
+                  textAlign: TextAlign.end,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: isDiskon ? AppDesign.danger : Colors.green[800],
+                  ),
                 ),
               ),
             ],

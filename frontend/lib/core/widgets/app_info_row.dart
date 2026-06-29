@@ -30,10 +30,14 @@ class AppInfoRow extends StatelessWidget {
               Text(
                 label,
                 style: AppDesign.bodyMuted(context).copyWith(fontSize: 11.5),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 1),
               Text(
                 value,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 13.5,

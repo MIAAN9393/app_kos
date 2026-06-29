@@ -257,40 +257,42 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
           top: Radius.circular(AppDesign.radiusMd),
         ),
       ),
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: AppDesign.spaceMd,
-          right: AppDesign.spaceMd,
-          top: AppDesign.spaceLg,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + AppDesign.spaceLg,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('Tambah Pembayaran', style: AppDesign.titleBold(ctx)),
-            Text(
-              'Masukkan nominal yang diterima sekarang (boleh cicilan).',
-              style: AppDesign.bodyMuted(ctx),
-            ),
-            const SizedBox(height: AppDesign.spaceMd),
-            AppTextField(
-              label: 'Jumlah bayar (Rp)',
-              hint: '500000',
-              helperText: AppFormHints.rupiah,
-              required: true,
-              controller: _jumlahBayar,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: AppDesign.spaceMd),
-            AppPrimaryButton(
-              label: 'Simpan',
-              onPressed: () async {
-                Navigator.pop(ctx);
-                await _tambahPembayaran();
-              },
-            ),
-          ],
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: AppDesign.spaceMd,
+            right: AppDesign.spaceMd,
+            top: AppDesign.spaceLg,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + AppDesign.spaceLg,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Tambah Pembayaran', style: AppDesign.titleBold(ctx)),
+              Text(
+                'Masukkan nominal yang diterima sekarang (boleh cicilan).',
+                style: AppDesign.bodyMuted(ctx),
+              ),
+              const SizedBox(height: AppDesign.spaceMd),
+              AppTextField(
+                label: 'Jumlah bayar (Rp)',
+                hint: '500000',
+                helperText: AppFormHints.rupiah,
+                required: true,
+                controller: _jumlahBayar,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: AppDesign.spaceMd),
+              AppPrimaryButton(
+                label: 'Simpan',
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  await _tambahPembayaran();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -306,41 +308,43 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
           top: Radius.circular(AppDesign.radiusMd),
         ),
       ),
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(
-          left: AppDesign.spaceMd,
-          right: AppDesign.spaceMd,
-          top: AppDesign.spaceLg,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + AppDesign.spaceLg,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('Refund Pembayaran', style: AppDesign.titleBold(ctx)),
-            Text(
-              'Maksimal yang bisa direfund: ${AppDesign.formatRupiah(maxRefund)}',
-              style: AppDesign.bodyMuted(ctx),
-            ),
-            const SizedBox(height: AppDesign.spaceMd),
-            AppTextField(
-              label: 'Jumlah refund (Rp)',
-              hint: '100000',
-              helperText: AppFormHints.rupiah,
-              required: true,
-              controller: _jumlahRefund,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: AppDesign.spaceMd),
-            AppPrimaryButton(
-              label: 'Proses Refund',
-              outlined: true,
-              onPressed: () async {
-                Navigator.pop(ctx);
-                await _refund(pembayaranId);
-              },
-            ),
-          ],
+      builder: (ctx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            left: AppDesign.spaceMd,
+            right: AppDesign.spaceMd,
+            top: AppDesign.spaceLg,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + AppDesign.spaceLg,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Refund Pembayaran', style: AppDesign.titleBold(ctx)),
+              Text(
+                'Maksimal yang bisa direfund: ${AppDesign.formatRupiah(maxRefund)}',
+                style: AppDesign.bodyMuted(ctx),
+              ),
+              const SizedBox(height: AppDesign.spaceMd),
+              AppTextField(
+                label: 'Jumlah refund (Rp)',
+                hint: '100000',
+                helperText: AppFormHints.rupiah,
+                required: true,
+                controller: _jumlahRefund,
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: AppDesign.spaceMd),
+              AppPrimaryButton(
+                label: 'Proses Refund',
+                outlined: true,
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  await _refund(pembayaranId);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -559,33 +563,51 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
                           ),
                           padding: const EdgeInsets.all(AppDesign.spaceMd),
                           decoration: AppDesign.cardDecoration(),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      AppDesign.formatRupiah(p['jumlah_bayar']),
-                                      style: AppDesign.titleBold(context),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              final textWidth = (constraints.maxWidth - 128)
+                                  .clamp(140.0, constraints.maxWidth);
+                              return Wrap(
+                                spacing: AppDesign.spaceSm,
+                                runSpacing: AppDesign.spaceXs,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: textWidth,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppDesign.formatRupiah(
+                                            p['jumlah_bayar'],
+                                          ),
+                                          style: AppDesign.titleBold(context),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          '${p['dibuat_pada'] ?? ''}',
+                                          style: AppDesign.bodyMuted(context),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      '${p['dibuat_pada'] ?? ''}',
-                                      style: AppDesign.bodyMuted(context),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              AppStatusBadge(status: status),
-                              if (isValid)
-                                TextButton(
-                                  onPressed: () => _dialogRefund(
-                                    id,
-                                    (p['jumlah_bayar'] as num?)?.toInt() ?? 0,
                                   ),
-                                  child: const Text('Refund'),
-                                ),
-                            ],
+                                  AppStatusBadge(status: status),
+                                  if (isValid)
+                                    TextButton(
+                                      onPressed: () => _dialogRefund(
+                                        id,
+                                        (p['jumlah_bayar'] as num?)?.toInt() ??
+                                            0,
+                                      ),
+                                      child: const Text('Refund'),
+                                    ),
+                                ],
+                              );
+                            },
                           ),
                         ),
                       );
@@ -645,10 +667,28 @@ class _TagihanDetailPageState extends State<TagihanDetailPage>
     return Padding(
       padding: const EdgeInsets.only(bottom: AppDesign.spaceSm),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: AppDesign.bodyMuted(context)),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Flexible(
+            flex: 4,
+            child: Text(
+              label,
+              style: AppDesign.bodyMuted(context),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: AppDesign.spaceSm),
+          Expanded(
+            flex: 5,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+          ),
         ],
       ),
     );

@@ -99,17 +99,24 @@ class DashboardFeaturedRevenue extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          Text(
-            AppDesign.formatRupiah(pendapatanBulanIni),
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              AppDesign.formatRupiah(pendapatanBulanIni),
+              maxLines: 1,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.5,
+              ),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             'Bulan lalu ${AppDesign.formatRupiah(pendapatanBulanLalu)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Colors.white.withValues(alpha: 0.75),
             ),

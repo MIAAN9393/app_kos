@@ -40,9 +40,7 @@ class AppHeroHeader extends StatelessWidget {
           child: SafeArea(
             bottom: false,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: toolbarMinHeight,
-              ),
+              constraints: const BoxConstraints(minHeight: toolbarMinHeight),
               child: trailing != null
                   ? Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,19 +84,23 @@ class AppHeroHeader extends StatelessWidget {
       children: [
         Text(
           title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                height: 1.2,
-              ),
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            height: 1.2,
+          ),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: 2),
           Text(
             subtitle!,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.88),
-                ),
+              color: Colors.white.withValues(alpha: 0.88),
+            ),
           ),
         ],
       ],
@@ -133,6 +135,8 @@ class AppHeroStat extends StatelessWidget {
         children: [
           Text(
             value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: color,
               fontSize: 18,

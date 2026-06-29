@@ -26,7 +26,7 @@ class AppDocumentActionButton extends StatelessWidget {
     if (filled) {
       return SizedBox(
         width: double.infinity,
-        height: 32,
+        height: 40,
         child: FilledButton.icon(
           onPressed: onPressed,
           style: FilledButton.styleFrom(
@@ -39,14 +39,14 @@ class AppDocumentActionButton extends StatelessWidget {
             textStyle: textStyle,
           ),
           icon: Icon(icon, size: 16),
-          label: Text(label),
+          label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
         ),
       );
     }
 
     return SizedBox(
       width: double.infinity,
-      height: 32,
+      height: 40,
       child: OutlinedButton.icon(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
@@ -60,7 +60,7 @@ class AppDocumentActionButton extends StatelessWidget {
           textStyle: textStyle,
         ),
         icon: Icon(icon, size: 16),
-        label: Text(label),
+        label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
       ),
     );
   }

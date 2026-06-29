@@ -91,7 +91,12 @@ class AppEntityOutlinedAction extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: () => _handleTap(context),
       icon: Icon(icon, color: color, size: 20),
-      label: Text(label, style: TextStyle(color: color)),
+      label: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(color: color),
+      ),
       style: OutlinedButton.styleFrom(
         foregroundColor: color,
         side: BorderSide(color: color.withValues(alpha: enabled ? 0.5 : 0.35)),

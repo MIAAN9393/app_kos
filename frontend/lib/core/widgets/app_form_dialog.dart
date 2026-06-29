@@ -30,7 +30,9 @@ Future<T?> showAppFormDialog<T>({
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -89,6 +91,8 @@ class AppFormDialogHeader extends StatelessWidget {
             children: [
               Text(
                 title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -99,7 +103,13 @@ class AppFormDialogHeader extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   subtitle!,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 13, height: 1.35),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 13,
+                    height: 1.35,
+                  ),
                 ),
               ],
             ],
@@ -131,34 +141,67 @@ class AppFormDialogActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    return Row(
-      children: [
-        Expanded(
-          child: OutlinedButton(
-            onPressed: onCancel,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.icon_hapus,
-              side: BorderSide(color: AppColors.icon_hapus.withValues(alpha: 0.4)),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final stacked = constraints.maxWidth < 300;
+        final buttonWidth = stacked
+            ? constraints.maxWidth
+            : (constraints.maxWidth - 12) / 2;
+        return Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            SizedBox(
+              width: buttonWidth,
+              child: OutlinedButton(
+                onPressed: onCancel,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.icon_hapus,
+                  side: BorderSide(
+                    color: AppColors.icon_hapus.withValues(alpha: 0.4),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(
+                  cancelLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
             ),
-            child: Text(cancelLabel, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: ElevatedButton(
-            onPressed: () async => onSave(),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            SizedBox(
+              width: buttonWidth,
+              child: ElevatedButton(
+                onPressed: () async => onSave(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(
+                  saveLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
             ),
-            child: Text(saveLabel, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
@@ -199,17 +242,31 @@ class AppFormField extends StatelessWidget {
         children: [
           RichText(
             text: TextSpan(
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[800]),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
               children: [
                 TextSpan(text: label),
                 if (required)
-                  const TextSpan(text: ' *', style: TextStyle(color: AppDesign.danger)),
+                  const TextSpan(
+                    text: ' *',
+                    style: TextStyle(color: AppDesign.danger),
+                  ),
               ],
             ),
           ),
           if (helper != null) ...[
             const SizedBox(height: 4),
-            Text(helper!, style: TextStyle(fontSize: 11, color: Colors.grey[600], height: 1.3)),
+            Text(
+              helper!,
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.grey[600],
+                height: 1.3,
+              ),
+            ),
           ],
           const SizedBox(height: 8),
           TextField(
@@ -225,13 +282,18 @@ class AppFormField extends StatelessWidget {
               hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.15)),
+                borderSide: BorderSide(
+                  color: Colors.grey.withValues(alpha: 0.15),
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide(color: accent, width: 1.5),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 16,
+              ),
             ),
           ),
         ],
@@ -263,4 +325,6 @@ class AppFormSectionLabel extends StatelessWidget {
 }
 
 /// Hanya angka (untuk harga, telepon, kapasitas).
-List<TextInputFormatter> angkaSajaFormatter() => [FilteringTextInputFormatter.digitsOnly];
+List<TextInputFormatter> angkaSajaFormatter() => [
+  FilteringTextInputFormatter.digitsOnly,
+];

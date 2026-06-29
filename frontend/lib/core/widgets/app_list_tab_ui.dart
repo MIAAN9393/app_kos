@@ -16,19 +16,16 @@ class AppListTabUi {
     Color(0xFF7C3AED),
   ];
 
-  static EdgeInsets listPadding({required bool embedded}) => EdgeInsets.fromLTRB(
+  static EdgeInsets listPadding({required bool embedded}) =>
+      EdgeInsets.fromLTRB(
         horizontal,
         8,
         horizontal,
         embedded ? listBottomEmbedded : listBottomStandalone,
       );
 
-  static EdgeInsets searchPadding({bool embedded = true}) => EdgeInsets.fromLTRB(
-        horizontal,
-        embedded ? 10 : 12,
-        horizontal,
-        6,
-      );
+  static EdgeInsets searchPadding({bool embedded = true}) =>
+      EdgeInsets.fromLTRB(horizontal, embedded ? 10 : 12, horizontal, 6);
 
   static Widget searchField({
     required TextEditingController controller,
@@ -45,7 +42,10 @@ class AppListTabUi {
           filled: true,
           fillColor: Colors.white,
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 12,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppDesign.radiusMd),
             borderSide: const BorderSide(color: AppDesign.border),
@@ -191,7 +191,10 @@ class AppListTabUi {
     );
   }
 
-  static Widget _compactSummaryBox(BuildContext context, AppListSummaryItem item) {
+  static Widget _compactSummaryBox(
+    BuildContext context,
+    AppListSummaryItem item,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: AppDesign.cardDecoration(),
@@ -303,67 +306,81 @@ class AppListTabUi {
       context: context,
       backgroundColor: AppDesign.card,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppDesign.radiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppDesign.radiusLg),
+        ),
       ),
       builder: (ctx) {
+        final maxHeight = MediaQuery.sizeOf(ctx).height * 0.82;
         return StatefulBuilder(
           builder: (ctx, setSheetState) {
             return SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppDesign.textPrimary,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                    child: Text(
-                      'Bisa pilih lebih dari satu. Kosongkan semua untuk tampilkan semua data.',
-                      style: AppDesign.bodyMuted(ctx).copyWith(fontSize: 12),
-                    ),
-                  ),
-                  const Divider(height: 1),
-                  for (var i = 0; i < labels.length; i++)
-                    CheckboxListTile(
-                      value: draft.contains(i),
-                      activeColor: AppDesign.info,
-                      title: Text(
-                        labels[i],
-                        style: TextStyle(
-                          fontWeight:
-                              draft.contains(i) ? FontWeight.w700 : FontWeight.w500,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: maxHeight),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppDesign.textPrimary,
                         ),
                       ),
-                      onChanged: (checked) {
-                        setSheetState(() {
-                          if (checked == true) {
-                            draft.add(i);
-                          } else {
-                            draft.remove(i);
-                          }
-                        });
-                      },
                     ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
-                    child: FilledButton(
-                      onPressed: () {
-                        onChanged(Set<int>.from(draft));
-                        Navigator.pop(ctx);
-                      },
-                      child: const Text('Terapkan'),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                      child: Text(
+                        'Bisa pilih lebih dari satu. Kosongkan semua untuk tampilkan semua data.',
+                        style: AppDesign.bodyMuted(ctx).copyWith(fontSize: 12),
+                      ),
                     ),
-                  ),
-                ],
+                    const Divider(height: 1),
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: labels.length,
+                        itemBuilder: (context, i) => CheckboxListTile(
+                          value: draft.contains(i),
+                          activeColor: AppDesign.info,
+                          title: Text(
+                            labels[i],
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: draft.contains(i)
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                            ),
+                          ),
+                          onChanged: (checked) {
+                            setSheetState(() {
+                              if (checked == true) {
+                                draft.add(i);
+                              } else {
+                                draft.remove(i);
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
+                      child: FilledButton(
+                        onPressed: () {
+                          onChanged(Set<int>.from(draft));
+                          Navigator.pop(ctx);
+                        },
+                        child: const Text('Terapkan'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           },

@@ -74,26 +74,29 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: _nama,
               ),
               const SizedBox(height: AppDesign.spaceMd),
-              SegmentedButton<String>(
-                segments: const [
-                  ButtonSegment(
-                    value: 'email',
-                    label: Text('Email'),
-                    icon: Icon(Icons.email_outlined),
-                  ),
-                  ButtonSegment(
-                    value: 'phone',
-                    label: Text('Nomor HP'),
-                    icon: Icon(Icons.phone_android_rounded),
-                  ),
-                ],
-                selected: {_channel},
-                onSelectionChanged: _loading
-                    ? null
-                    : (value) => setState(() {
-                        _channel = value.first;
-                        _kontak.clear();
-                      }),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SegmentedButton<String>(
+                  segments: const [
+                    ButtonSegment(
+                      value: 'email',
+                      label: Text('Email'),
+                      icon: Icon(Icons.email_outlined),
+                    ),
+                    ButtonSegment(
+                      value: 'phone',
+                      label: Text('Nomor HP'),
+                      icon: Icon(Icons.phone_android_rounded),
+                    ),
+                  ],
+                  selected: {_channel},
+                  onSelectionChanged: _loading
+                      ? null
+                      : (value) => setState(() {
+                          _channel = value.first;
+                          _kontak.clear();
+                        }),
+                ),
               ),
               const SizedBox(height: AppDesign.spaceMd),
               AppTextField(
